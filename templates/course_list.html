@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Course Registration</title>
+
+<style>
+
+table{
+border-collapse: collapse;
+width:90%;
+margin:auto;
+}
+
+th,td{
+border:1px solid black;
+padding:8px;
+text-align:center;
+}
+
+th{
+background:#f2f2f2;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2 style="text-align:center">Course Registration</h2>
+
+<form method="POST" action="/register_courses">
+
+<table>
+
+<tr>
+
+<th>Select</th>
+<th>Course Code</th>
+<th>Course Title</th>
+<th>Credits</th>
+<th>Course Type</th>
+<th>Faculty</th>
+<th>Details</th>
+
+</tr>
+
+{% for course in courses %}
+
+<tr>
+
+<td>
+<input type="checkbox" name="course_ids" value="{{course[0]}}">
+</td>
+
+<td>{{course[1]}}</td>
+<td>{{course[2]}}</td>
+<td>{{course[3]}}</td>
+<td>{{course[4]}}</td>
+<td>{{course[5]}}</td>
+
+<td>
+<a href="/course_details/{{course[0]}}">View</a>
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
+<div style="text-align:center">
+
+<button type="submit">Register Selected Courses</button>
+
+</div>
+
+</form>
+<script>
+
+function validateCourses(){
+
+    let checkboxes = document.querySelectorAll("input[name='course_ids']:checked");
+
+    let dc = 0
+    let de = 0
+
+    checkboxes.forEach(cb => {
+
+        let row = cb.closest("tr")
+        let type = row.cells[5].innerText
+
+        if(type === "DC")
+            dc++
+        else
+            de++
+    })
+
+    if(dc < 3){
+        alert("You must select at least 3 DC courses")
+        return false
+    }
+
+    if(de > 2){
+        alert("Maximum 2 DE courses allowed")
+        return false
+    }
+
+    return true
+}
+
+</script>
+</body>
+
+</html>

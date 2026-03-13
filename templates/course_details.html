@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Details - {{ course_master[1] }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+    <h2>{{ course_master[2] }} ({{ course_master[1] }})</h2>
+
+    <h4>Course Master</h4>
+    <p>Type: {{ course_master[3] }} | Credits: {{ course_master[6] }} (L:{{ course_master[4] }}, T:{{ course_master[5] }}, P:{{ course_master[6] }})</p>
+
+    <h4>Prerequisites</h4>
+    <ul>
+        {% for pr in prerequisites %}
+        <li>{{ pr[1] }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Add sections for Equivalents, Objectives, Outcomes, Description, Books similarly -->
+
+    <a href="/register_courses" class="btn btn-secondary">Back to Registration</a>
+</body>
+</html>

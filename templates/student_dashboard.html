@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; padding: 30px; }
+        .welcome { margin-bottom: 30px; }
+        .logout { float: right; }
+        .tab-content { background: white; padding: 30px; border: 1px solid #dee2e6; border-top: none; border-radius: 0 0 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .nav-tabs .nav-link { font-weight: 600; font-size: 1.15rem; }
+        .nav-tabs .nav-link.active { color: #0d6efd; border-color: #0d6efd #0d6efd #fff; }
+        h4 { color: #343a40; margin-bottom: 20px; }
+        .text-muted { font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center welcome">
+        <h2>Welcome, {{ name or 'Student' }}</h2>
+        <a href="/logout" class="btn btn-outline-danger logout">Logout</a>
+    </div>
+
+    <ul class="nav nav-tabs" id="studentTabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="/student/examination">Examination</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/student/register_courses">Student Registration</a>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-4">
+        <!-- Examination Tab (this page) -->
+        <div class="tab-pane fade show active" id="examination">
+            <h4>Examination Details</h4>
+            <p class="lead text-muted">
+                Select semester and academic session to view your cleared subjects and backlogs.
+            </p>
+            <p class="text-muted">
+                Click the "Examination" tab above to load your results.
+            </p>
+        </div>
+
+        <!-- Student Registration Tab (placeholder) -->
+        <div class="tab-pane fade" id="registration">
+            <h4>Course Registration</h4>
+            <p class="lead text-muted">
+                View and register your DC (compulsory) and DE (elective) courses.
+            </p>
+            <p class="text-muted">
+                Click the "Student Registration" tab above to see available courses and generate your PDF.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
