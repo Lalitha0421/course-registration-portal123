@@ -1,0 +1,511 @@
+from flask import Blueprint, render_template, session, redirect, request, flash, url_for, make_response
+from config import get_connection
+from datetime import datetime
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+
+student_bp = Blueprint("student", __name__, url_prefix="/student")
+
+def get_current_session():
+    return "Y1_WINTER"  # Change to dynamic later if needed
+
+# ────────────────────────────────────────────────
+# STUDENT DASHBOARD
+# ────────────────────────────────────────────────
+@student_bp.route("/dashboard")
+def student_dashboard():
+    if session.get("role") != "student":
+        flash("Please login as student", "warning")
+        return redirect(url_for("auth.login_page"))
+
+    name = session.get("name", "Student")
+    return render_template("student_dashboard.html", name=name)
+
+# ────────────────────────────────────────────────
+# EXAMINATION (placeholder)
+# ────────────────────────────────────────────────
+@student_bp.route("/examination")
+def examination():
+    if session.get("role") != "student":
+        return redirect(url_for("auth.login_page"))
+    return render_template("examination.html")
+
+# ────────────────────────────────────────────────
+# STUDENT REGISTRATION PAGE
+# ────────────────────────────────────────────────
+@student_bp.route("/register_courses", methods=["GET", "POST"])
+def register_courses():
+    if session.get("role") != "student":
+        flash("Only students can access this page", "danger")
+        return redirect(url_for("student.student_dashboard"))
+
+    student_id = session.get("student_id")
+    if not student_id:
+        flash("Session error – missing student ID", "danger")
+        return redirect(url_for("auth.login_page"))
+
+    current_session = get_current_session()
+    print(f"DEBUG: register_courses - student_id={student_id}, session='{current_session}'")
+
+    conn = None
+    cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        # DC courses – robust query
+        cursor.execute("""
+            SELECT DISTINCT c.course_code, c.course_title, c.credits,
+                   LISTAGG(DISTINCT NVL(f.faculty_name, 'Not Assigned'), ', ') WITHIN GROUP (ORDER BY f.faculty_name) AS coordinator,
+                   LISTAGG(DISTINCT NVL(ci.section, 'N/A'), ', ') WITHIN GROUP (ORDER BY ci.section) AS section,
+                   LISTAGG(DISTINCT NVL(ci.batch, 'N/A'), ', ') WITHIN GROUP (ORDER BY ci.batch) AS batch,
+                   LISTAGG(DISTINCT NVL(ci.slot, 'N/A'), ', ') WITHIN GROUP (ORDER BY ci.slot) AS slot
+            FROM course_instance ci
+            JOIN course_master c ON ci.course_id = c.course_id
+            LEFT JOIN faculty f ON ci.faculty_id = f.faculty_id
+            WHERE TRIM(UPPER(ci.academic_session)) = TRIM(UPPER(:sess))
+              AND TRIM(UPPER(c.course_type)) = 'DC'
+            GROUP BY c.course_code, c.course_title, c.credits
+            ORDER BY c.course_code
+        """, sess=current_session)
+        dc_courses = cursor.fetchall() or []
+
+        # DE courses – robust query
+        cursor.execute("""
+            SELECT DISTINCT c.course_code, c.course_title, c.credits,
+                   LISTAGG(DISTINCT NVL(f.faculty_name, 'Not Assigned'), ', ') WITHIN GROUP (ORDER BY f.faculty_name) AS coordinator,
+                   LISTAGG(DISTINCT NVL(ci.section, 'N/A'), ', ') WITHIN GROUP (ORDER BY ci.section) AS section,
+                   LISTAGG(DISTINCT NVL(ci.batch, 'N/A'), ', ') WITHIN GROUP (ORDER BY ci.batch) AS batch,
+                   LISTAGG(DISTINCT NVL(ci.slot, 'N/A'), ', ') WITHIN GROUP (ORDER BY ci.slot) AS slot
+            FROM course_instance ci
+            JOIN course_master c ON ci.course_id = c.course_id
+            LEFT JOIN faculty f ON ci.faculty_id = f.faculty_id
+            WHERE TRIM(UPPER(ci.academic_session)) = TRIM(UPPER(:sess))
+              AND TRIM(UPPER(c.course_type)) = 'DE'
+            GROUP BY c.course_code, c.course_title, c.credits
+            ORDER BY c.course_code
+        """, sess=current_session)
+        de_courses = cursor.fetchall() or []
+
+        # Backlogs
+        cursor.execute("""
+            SELECT c.course_code, c.course_title, c.credits, 'Backlog (Mandatory DC)' AS coordinator,
+                   'Prev' AS section, 'Prev' AS batch, 'Prev' AS slot, NULL AS instance_id
+            FROM results r
+            JOIN course_master c ON r.course_id = c.course_id
+            WHERE r.student_id = :sid AND r.grade < 40
+            ORDER BY c.course_code
+        """, sid=student_id)
+        backlogs = cursor.fetchall() or []
+
+        print(f"DEBUG: Loaded DC={len(dc_courses)}, DE={len(de_courses)}, Backlogs={len(backlogs)}")
+
+        if request.method == "POST":
+            action = request.form.get("action", "submit")
+
+            selected_dc = request.form.getlist("dc_selected")
+            selected_de = request.form.getlist("de_selected")
+
+            required_dc = len(dc_courses) + len(backlogs)
+            if len(selected_dc) != required_dc:
+                flash(f"You must select all {required_dc} DC courses (including backlogs)", "danger")
+                return redirect(url_for("student.register_courses"))
+
+            if len(selected_de) != 2:
+                flash("You must select exactly 2 DE courses", "danger")
+                return redirect(url_for("student.register_courses"))
+
+            all_selected_codes = selected_dc + selected_de
+
+            cursor.execute("""
+                DELETE FROM student_registration_courses
+                WHERE student_id = :sid AND academic_session = :sess
+            """, sid=student_id, sess=current_session)
+
+            for code in all_selected_codes:
+                cursor.execute("""
+                    SELECT instance_id FROM course_instance ci
+                    JOIN course_master c ON ci.course_id = c.course_id
+                    WHERE c.course_code = :code 
+                      AND TRIM(UPPER(ci.academic_session)) = TRIM(UPPER(:sess)
+                    FETCH FIRST 1 ROW ONLY
+                """, code=code, sess=current_session)
+                instance = cursor.fetchone()
+                instance_id = instance[0] if instance else None
+
+                if instance_id:
+                    cursor.execute("""
+                        INSERT INTO student_registration_courses (
+                            student_id, course_instance_id, academic_session, registration_date
+                        ) VALUES (:sid, :inst_id, :sess, SYSDATE)
+                    """, sid=student_id, inst_id=instance_id, sess=current_session)
+
+            conn.commit()
+            flash("Registration updated successfully", "success")
+
+            if action == "generate_pdf":
+                return generate_registration_pdf(student_id, current_session)
+
+            return redirect(url_for("student.register_courses"))
+
+        return render_template(
+            "register_courses.html",
+            dc_courses=dc_courses,
+            de_courses=de_courses,
+            backlogs=backlogs,
+            current_session=current_session
+        )
+
+    except Exception as e:
+        print(f"ERROR in register_courses: {str(e)}")
+        flash(f"Cannot load registration page: {str(e)}", "danger")
+        return redirect(url_for("student.student_dashboard"))
+
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+# ────────────────────────────────────────────────
+# VIEW / EDIT REGISTERED COURSES
+# ────────────────────────────────────────────────
+@student_bp.route("/view_registered_courses", methods=["GET", "POST"])
+def view_registered_courses():
+    if session.get("role") != "student":
+        return redirect(url_for("auth.login_page"))
+
+    student_id = session.get("student_id")
+    current_session = get_current_session()
+
+    conn = None
+    cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT c.course_code
+            FROM student_registration_courses reg
+            JOIN course_instance ci ON reg.course_instance_id = ci.instance_id
+            JOIN course_master c ON ci.course_id = c.course_id
+            WHERE reg.student_id = :sid AND reg.academic_session = :sess
+        """, sid=student_id, sess=current_session)
+        saved_codes = {row[0] for row in cursor.fetchall()}
+
+        cursor.execute("""
+            SELECT DISTINCT c.course_code, c.course_title, c.credits,
+                   LISTAGG(DISTINCT NVL(f.faculty_name, 'Not Assigned'), ', ') WITHIN GROUP (ORDER BY f.faculty_name) AS coordinator,
+                   LISTAGG(DISTINCT NVL(ci.section, 'N/A'), ', ') WITHIN GROUP (ORDER BY ci.section) AS section,
+                   LISTAGG(DISTINCT NVL(ci.batch, 'N/A'), ', ') WITHIN GROUP (ORDER BY ci.batch) AS batch,
+                   LISTAGG(DISTINCT NVL(ci.slot, 'N/A'), ', ') WITHIN GROUP (ORDER BY ci.slot) AS slot
+            FROM course_instance ci
+            JOIN course_master c ON ci.course_id = c.course_id
+            LEFT JOIN faculty f ON ci.faculty_id = f.faculty_id
+            WHERE TRIM(UPPER(ci.academic_session)) = TRIM(UPPER(:sess))
+              AND TRIM(UPPER(c.course_type)) = 'DC'
+            GROUP BY c.course_code, c.course_title, c.credits
+            ORDER BY c.course_code
+        """, sess=current_session)
+        dc_courses = cursor.fetchall() or []
+
+        cursor.execute("""
+            SELECT DISTINCT c.course_code, c.course_title, c.credits,
+                   LISTAGG(DISTINCT NVL(f.faculty_name, 'Not Assigned'), ', ') WITHIN GROUP (ORDER BY f.faculty_name) AS coordinator,
+                   LISTAGG(DISTINCT NVL(ci.section, 'N/A'), ', ') WITHIN GROUP (ORDER BY ci.section) AS section,
+                   LISTAGG(DISTINCT NVL(ci.batch, 'N/A'), ', ') WITHIN GROUP (ORDER BY ci.batch) AS batch,
+                   LISTAGG(DISTINCT NVL(ci.slot, 'N/A'), ', ') WITHIN GROUP (ORDER BY ci.slot) AS slot
+            FROM course_instance ci
+            JOIN course_master c ON ci.course_id = c.course_id
+            LEFT JOIN faculty f ON ci.faculty_id = f.faculty_id
+            WHERE TRIM(UPPER(ci.academic_session)) = TRIM(UPPER(:sess)
+              AND TRIM(UPPER(c.course_type)) = 'DE'
+            GROUP BY c.course_code, c.course_title, c.credits
+            ORDER BY c.course_code
+        """, sess=current_session)
+        de_courses = cursor.fetchall() or []
+
+        cursor.execute("""
+            SELECT c.course_code, c.course_title, c.credits, 'Backlog (Mandatory DC)' AS coordinator,
+                   'Prev' AS section, 'Prev' AS batch, 'Prev' AS slot, NULL AS instance_id
+            FROM results r
+            JOIN course_master c ON r.course_id = c.course_id
+            WHERE r.student_id = :sid AND r.grade < 40
+            ORDER BY c.course_code
+        """, sid=student_id)
+        backlogs = cursor.fetchall() or []
+
+        if request.method == "POST":
+            selected_dc = request.form.getlist("dc_selected")
+            selected_de = request.form.getlist("de_selected")
+
+            required_dc = len(dc_courses) + len(backlogs)
+            if len(selected_dc) != required_dc:
+                flash(f"You must select all {required_dc} DC courses", "danger")
+                return redirect(url_for("student.view_registered_courses"))
+
+            if len(selected_de) != 2:
+                flash("You must select exactly 2 DE courses", "danger")
+                return redirect(url_for("student.view_registered_courses"))
+
+            all_selected_codes = selected_dc + selected_de
+
+            cursor.execute("""
+                DELETE FROM student_registration_courses
+                WHERE student_id = :sid AND academic_session = :sess
+            """, sid=student_id, sess=current_session)
+
+            for code in all_selected_codes:
+                cursor.execute("""
+                    SELECT instance_id FROM course_instance ci
+                    JOIN course_master c ON ci.course_id = c.course_id
+                    WHERE c.course_code = :code 
+                      AND TRIM(UPPER(ci.academic_session)) = TRIM(UPPER(:sess)
+                    FETCH FIRST 1 ROW ONLY
+                """, code=code, sess=current_session)
+                instance = cursor.fetchone()
+                instance_id = instance[0] if instance else None
+
+                if instance_id:
+                    cursor.execute("""
+                        INSERT INTO student_registration_courses (
+                            student_id, course_instance_id, academic_session, registration_date
+                        ) VALUES (:sid, :inst_id, :sess, SYSDATE)
+                    """, sid=student_id, inst_id=instance_id, sess=current_session)
+
+            conn.commit()
+            flash("Registration updated from View/Edit", "success")
+
+            if request.form.get("action") == "generate_pdf":
+                return generate_registration_pdf(student_id, current_session)
+
+            return redirect(url_for("student.view_registered_courses"))
+
+        return render_template(
+            "view_registered.html",
+            dc_courses=dc_courses,
+            de_courses=de_courses,
+            backlogs=backlogs,
+            saved_codes=saved_codes,
+            current_session=current_session
+        )
+
+    except Exception as e:
+        print(f"ERROR in view_registered_courses: {str(e)}")
+        flash(f"Error: {str(e)}", "danger")
+        return redirect(url_for("student.student_dashboard"))
+
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+# ────────────────────────────────────────────────
+# COURSE DETAILS
+# ────────────────────────────────────────────────
+@student_bp.route("/course_details/<course_code>")
+def course_details(course_code):
+    if session.get("role") != "student":
+        return redirect(url_for("student.student_dashboard"))
+
+    conn = None
+    cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT course_code, course_title, course_type, program, l, t, p, credits
+            FROM course_master WHERE course_code = :code
+        """, code=course_code)
+        basic = cursor.fetchone()
+
+        if not basic:
+            flash("Course not found", "danger")
+            return redirect(url_for("student.register_courses"))
+
+        cursor.execute("""
+            SELECT cm.course_code, cm.course_title
+            FROM course_prerequisites cp
+            JOIN course_master cm ON cp.prerequisite_course_id = cm.course_id
+            WHERE cp.course_id = (SELECT course_id FROM course_master WHERE course_code = :code)
+        """, code=course_code)
+        prereqs = cursor.fetchall() or []
+
+        cursor.execute("""
+            SELECT description FROM course_objectives
+            WHERE course_id = (SELECT course_id FROM course_master WHERE course_code = :code)
+            ORDER BY print_seq
+        """, code=course_code)
+        objectives = [row[0] for row in cursor.fetchall()]
+
+        cursor.execute("""
+            SELECT outcome_desc FROM course_outcomes
+            WHERE course_id = (SELECT course_id FROM course_master WHERE course_code = :code)
+            ORDER BY print_seq
+        """, code=course_code)
+        outcomes = [row[0] for row in cursor.fetchall()]
+
+        cursor.execute("""
+            SELECT topic, duration_weeks FROM course_description
+            WHERE course_id = (SELECT course_id FROM course_master WHERE course_code = :code)
+            ORDER BY desc_id
+        """, code=course_code)
+        description = cursor.fetchall() or []
+
+        cursor.execute("SELECT title, type FROM text_books WHERE course_id = (SELECT course_id FROM course_master WHERE course_code = :code)", code=course_code)
+        text_books = cursor.fetchall() or []
+
+        cursor.execute("SELECT title, type FROM reference_books WHERE course_id = (SELECT course_id FROM course_master WHERE course_code = :code)", code=course_code)
+        ref_books = cursor.fetchall() or []
+
+        return render_template(
+            "course_details.html",
+            basic=basic,
+            prereqs=prereqs,
+            objectives=objectives,
+            outcomes=outcomes,
+            description=description,
+            text_books=text_books,
+            ref_books=ref_books,
+            course_code=course_code
+        )
+
+    except Exception as e:
+        print(f"ERROR in course_details: {str(e)}")
+        flash(f"Error loading course details: {str(e)}", "danger")
+        return redirect(url_for("student.register_courses"))
+
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
+
+# ────────────────────────────────────────────────
+# PDF GENERATION – always reads latest from DB
+# ────────────────────────────────────────────────
+def generate_registration_pdf(student_id, current_session):
+    conn = None
+    cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT name, enrollment_no, faculty_advisor, mobile, address, email, is_hosteller, registration_date
+            FROM students WHERE student_id = :sid
+        """, sid=student_id)
+        student = cursor.fetchone()
+        if not student:
+            raise ValueError("Student not found")
+
+        name, enrl_no, advisor, mobile, address, email, hosteller, reg_date = student
+        hosteller_str = "Yes" if hosteller == 'Y' else "No"
+        reg_date_str = reg_date.strftime("%d/%m/%Y") if reg_date else datetime.now().strftime("%d/%m/%Y")
+
+        cursor.execute("""
+            SELECT c.course_code, c.course_title, NVL(ci.section, ''), NVL(ci.batch, ''),
+                   NVL(ci.slot, ''), c.course_type, c.credits,
+                   LISTAGG(DISTINCT NVL(f.faculty_name, 'Not Assigned'), ', ') WITHIN GROUP (ORDER BY f.faculty_name) AS faculty
+            FROM student_registration_courses reg
+            JOIN course_instance ci ON reg.course_instance_id = ci.instance_id
+            JOIN course_master c ON ci.course_id = c.course_id
+            LEFT JOIN faculty f ON ci.faculty_id = f.faculty_id
+            WHERE reg.student_id = :sid AND reg.academic_session = :sess
+            GROUP BY c.course_code, c.course_title, ci.section, ci.batch, ci.slot, c.course_type, c.credits
+            ORDER BY c.course_type, c.course_code
+        """, sid=student_id, sess=current_session)
+        courses = cursor.fetchall() or []
+
+        if not courses:
+            flash("No registered courses found for PDF", "warning")
+            return redirect(url_for("student.register_courses"))
+
+        dc_cnt = sum(1 for r in courses if r[5] == 'DC')
+        de_cnt = sum(1 for r in courses if r[5] == 'DE')
+        tot_credits = sum(r[6] for r in courses)
+        tot_courses = len(courses)
+
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=40, leftMargin=40, topMargin=60, bottomMargin=40)
+        styles = getSampleStyleSheet()
+        elements = []
+
+        logo_path = r"C:\Users\DELL\OneDrive\Desktop\course_portal\static\vnit_logo.jpeg"
+        try:
+            logo = Image(logo_path, width=80, height=80)
+            elements.append(logo)
+        except:
+            elements.append(Paragraph("VNIT", styles['Heading2']))
+
+        elements.append(Paragraph("Visvesvaraya National Institute of Technology", styles['Heading2']))
+        elements.append(Paragraph("Nagpur", styles['Heading4']))
+        elements.append(Spacer(1, 6))
+        elements.append(Paragraph("DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING", styles['Heading3']))
+        elements.append(Spacer(1, 12))
+        elements.append(Paragraph("FINAL SUBMITTED", styles['Heading4']))
+        elements.append(Spacer(1, 12))
+
+        student_lines = [
+            f"Name: {name or 'N/A'}",
+            f"ID No./Enrl. No.: {enrl_no or 'N/A'}",
+            f"Name of Fac. Adv.: {advisor or 'Not Assigned'}",
+            f"Contact No.: {mobile or 'Not Provided'}",
+            f"Current Address: {address or 'Not Provided'}",
+            f"Email: {email or 'N/A'}",
+            f"Hosteller: {hosteller_str}",
+            f"Dt. of Registration: {reg_date_str}"
+        ]
+        for line in student_lines:
+            elements.append(Paragraph(line, styles['Normal']))
+
+        elements.append(Spacer(1, 18))
+
+        table_data = [["Sr. No.", "Course code", "Course Title", "Section", "Batch", "Slot", "Course", "Credits", "Co-ordinator"]]
+        for i, row in enumerate(courses, 1):
+            table_data.append([str(i), row[0], row[1], row[2] or '', row[3] or '', row[4] or '', row[5], str(row[6]), row[7]])
+
+        table = Table(table_data, colWidths=[30, 60, 140, 45, 45, 45, 45, 45, 110])
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.orange),
+            ('TEXTCOLOR', (0,0), (-1,0), colors.black),
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('GRID', (0,0), (-1,-1), 1, colors.black),
+            ('FONTSIZE', (0,0), (-1,-1), 9),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ]))
+        elements.append(table)
+
+        elements.append(Spacer(1, 18))
+
+        elements.append(Paragraph(f"DC : {dc_cnt}   DE : {de_cnt}", styles['Normal']))
+        elements.append(Paragraph(f"Total Credit registered : {tot_credits}", styles['Normal']))
+        elements.append(Paragraph(f"Total No. of courses registered in the session : {tot_courses}", styles['Normal']))
+
+        elements.append(Spacer(1, 36))
+
+        sig_table = Table([
+            ["Signature of Student", "Signature of Faculty Advisor"],
+            [name or "____________________", "____________________"]
+        ], colWidths=[250, 250])
+        sig_table.setStyle(TableStyle([('ALIGN', (0,0), (-1,-1), 'CENTER')]))
+        elements.append(sig_table)
+
+        elements.append(Spacer(1, 24))
+        elements.append(Paragraph(f"Printed By {name or 'Student'}   Date: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}", styles['Italic']))
+
+        doc.build(elements)
+        buffer.seek(0)
+
+        response = make_response(buffer.getvalue())
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f'attachment; filename="registration_{enrl_no or student_id}_{datetime.now().strftime("%Y%m%d")}.pdf"'
+        return response
+
+    except Exception as e:
+        print(f"PDF ERROR: {str(e)}")
+        flash(f"Failed to generate PDF: {str(e)}", "danger")
+        return redirect(url_for("student.register_courses"))
+
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()

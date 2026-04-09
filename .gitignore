@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+.env
+*.pdf
+stats_*.json
+temp_*.json
+vnit_logo.jpeg
+ registration123.pdf
+ 1st year Scheme & Syllabus .pdf
+ tables.list.pdf

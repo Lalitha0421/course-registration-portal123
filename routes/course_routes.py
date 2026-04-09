@@ -252,3 +252,29 @@ def registration_pdf(reg_id):
         download_name="registration.pdf",
         mimetype="application/pdf"
     )
+
+@course_bp.route("/all")
+def all_courses():
+    from flask import jsonify
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT cm.course_id, cm.course_code, cm.course_title, cm.course_type, cm.credits, ci.academic_session
+        FROM course_master cm
+        LEFT JOIN course_instance ci ON cm.course_id = ci.course_id
+        ORDER BY ci.academic_session DESC, cm.course_code
+    """)
+    rows = cursor.fetchall()
+    courses = []
+    for r in rows:
+        courses.append({
+            "course_id": r[0],
+            "course_code": r[1],
+            "course_title": r[2],
+            "course_type": r[3],
+            "credits": r[4],
+            "session": r[5] or "Unassigned"
+        })
+    cursor.close()
+    conn.close()
+    return jsonify(courses)

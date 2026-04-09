@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VNIT Course Portal — ER Diagram</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+  header {
+    background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+    border-bottom: 2px solid #3b82f6;
+    padding: 18px 32px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  header h1 { font-size: 1.5rem; color: #60a5fa; }
+  header p  { font-size: 0.85rem; color: #94a3b8; }
+
+  .badge { background: #1d4ed8; color: #bfdbfe; border-radius: 20px; font-size: 0.75rem; padding: 3px 12px; margin-left: 8px; }
+
+  nav {
+    display: flex; gap: 8px; padding: 14px 32px;
+    background: #1e293b; border-bottom: 1px solid #334155; flex-wrap: wrap;
+  }
+  nav button {
+    padding: 6px 16px; border-radius: 20px; border: 1px solid #334155;
+    background: #0f172a; color: #94a3b8; cursor: pointer; font-size: 0.8rem;
+    transition: all .2s;
+  }
+  nav button:hover, nav button.active { background: #1d4ed8; color: #fff; border-color: #3b82f6; }
+
+  .legend {
+    display: flex; gap: 16px; padding: 10px 32px;
+    background: #1e293b; border-bottom: 1px solid #334155; flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #94a3b8; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  .diagram-area { padding: 24px 32px; }
+  .mermaid { background: #1e293b; border-radius: 12px; padding: 24px; min-height: 400px; }
+
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; padding: 0 32px 24px; }
+  .card { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 16px; text-align: center; }
+  .card .num { font-size: 2rem; font-weight: 700; color: #60a5fa; }
+  .card .lbl { font-size: 0.8rem; color: #94a3b8; margin-top: 4px; }
+
+  .section-title { font-size: 0.9rem; font-weight: 600; color: #60a5fa; padding: 16px 32px 8px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .tables-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; padding: 0 32px 32px; }
+  .tbl-card { background: #1e293b; border-radius: 8px; border: 1px solid #334155; overflow: hidden; }
+  .tbl-header { padding: 8px 14px; font-weight: 700; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
+  .tbl-body { padding: 0 14px 10px; }
+  .col-row { display: flex; justify-content: space-between; font-size: 0.75rem; padding: 3px 0; border-bottom: 1px solid #0f172a; }
+  .col-name { color: #e2e8f0; }
+  .col-type { color: #64748b; }
+  .col-note { color: #f59e0b; font-size: 0.68rem; font-weight: 600; margin-right: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🎓 VNIT Course Registration Portal <span class="badge">ER Diagram</span></h1>
+    <p>Oracle XE Database · 21 Tables · Full Schema · April 2026</p>
+  </div>
+</header>
+
+<div class="section-title">📊 Database at a Glance</div>
+<div class="summary">
+  <div class="card"><div class="num">21</div><div class="lbl">Total Tables</div></div>
+  <div class="card"><div class="num">3</div><div class="lbl">User Roles</div></div>
+  <div class="card"><div class="num">10</div><div class="lbl">Course & Syllabus</div></div>
+  <div class="card"><div class="num">2</div><div class="lbl">Registrations</div></div>
+  <div class="card"><div class="num">3</div><div class="lbl">OBE (NBA/NAAC)</div></div>
+  <div class="card"><div class="num">2</div><div class="lbl">Performance</div></div>
+</div>
+
+<nav>
+  <button class="active" onclick="showView('full')">🔗 Full ER Diagram</button>
+  <button onclick="showView('core')">👥 Users & People</button>
+  <button onclick="showView('course')">📚 Course Structure</button>
+  <button onclick="showView('reg')">📝 Registration Flow</button>
+  <button onclick="showView('obe')">🎯 OBE / NBA</button>
+  <button onclick="showView('ref')">📋 Table Reference</button>
+</nav>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#1d4ed8"></div> Auth / Users</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#059669"></div> Course Catalog</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div> Registration</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#7c3aed"></div> OBE / NBA</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div> Performance</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#0891b2"></div> Config / System</div>
+</div>
+
+<div class="diagram-area" id="diagram-view">
+  <div class="mermaid" id="main-mermaid">
+    erDiagram
+      %% Initializing...
+  </div>
+</div>
+
+<div id="table-view" style="display:none">
+<div class="tables-grid">
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1d4ed8">⚙️ SYSTEM_CONFIG</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>config_key</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">config_value</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">updated_at</span><span class="col-type">DATE</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1d4ed8">🔑 USERS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>user_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">UK</span>login_id</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">role</span><span class="col-type">student|faculty|admin</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>student_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>faculty_id</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#065f46">👨‍🏫 FACULTY</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>faculty_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">faculty_name</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">email</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">department</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#065f46">👨‍🎓 STUDENTS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>student_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">UK</span>enrollment_no</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">name</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">semester</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">program</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">advisor_id</span><span class="col-type">FK → FACULTY</span></div>
+      <div class="col-row"><span class="col-name">status</span><span class="col-type">PENDING|APR|REJ</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">📖 COURSE_MASTER</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>course_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">UK</span>course_code</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">course_title</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">course_type</span><span class="col-type">DC | DE</span></div>
+      <div class="col-row"><span class="col-name">credits</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">📅 COURSE_INSTANCE</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>instance_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>faculty_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">academic_session</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">section</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#92400e">📝 STUDENT_REGISTRATION</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>reg_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>student_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">semester</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">status</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#92400e">📋 STUDENT_REGISTRATION_COURSES</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>reg_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_instance_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">course_type</span><span class="col-type">VARCHAR2(5)</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#7c1d1d">📊 RESULTS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>result_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>student_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">grade_letter</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#7c1d1d">📅 ATTENDANCE</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>attendance_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>student_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">attendance_percentage</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#4c1d95">🎯 COURSE_OUTCOMES</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>outcome_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">outcome_desc</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#4c1d95">🏆 PROGRAM_OUTCOMES</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>po_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">UK</span>po_code</span><span class="col-type">PO1, PO2...</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#4c1d95">🔗 CO_PO_MAPPING</div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#4c1d95">🔗 CO_PO_MAPPING</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_outcome_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>program_outcome_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">weightage</span><span class="col-type">NUMBER(0-3)</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">📌 EVALUATION_DETAILS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>eval_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">component_name</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">weightage_percent</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#065f46">🔄 COORDINATOR</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>faculty_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>student_id</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">🔄 COURSE_PREREQUISITES</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>prerequisite_course_id</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">🎯 COURSE_OBJECTIVES</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>obj_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">description</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">📝 COURSE_DESCRIPTION</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>desc_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">topic</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">📚 TEXT_BOOKS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>book_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">title</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">type</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">📚 REFERENCE_BOOKS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>ref_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">title</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">type</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">🔄 COURSE_EQUIVALENTS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- TEXTUAL DIAGRAM DATA -->
+<script id="data-full" type="text/plain">
+erDiagram
+    SYSTEM_CONFIG {
+        string config_key PK
+        string config_value
+        date updated_at
+    }
+    USERS {
+        int user_id PK
+        string login_id
+        string password_hash
+        string role
+        int student_id FK
+        int faculty_id FK
+        date created_at
+    }
+    FACULTY {
+        int faculty_id PK
+        int user_id FK
+        string faculty_name
+        string email
+        string department
+    }
+    STUDENTS {
+        int student_id PK
+        int user_id FK
+        string enrollment_no
+        string name
+        string email
+        string mobile
+        int semester
+        string program
+        int advisor_id FK
+        string status
+        date registration_date
+    }
+    COURSE_MASTER {
+        int course_id PK
+        string course_code
+        string course_title
+        string course_type
+        string program
+        int L
+        int T
+        int P
+        int credits
+    }
+    COURSE_INSTANCE {
+        int instance_id PK
+        int course_id FK
+        int faculty_id FK
+        string academic_session
+        int semester
+        string section
+        string batch
+        string slot
+    }
+    STUDENT_REGISTRATION {
+        int reg_id PK
+        int student_id FK
+        int semester
+        string academic_session
+        string status
+        date registration_date
+    }
+    STUDENT_REGISTRATION_COURSES {
+        int id PK
+        int reg_id FK
+        int course_instance_id FK
+        string course_type
+    }
+    RESULTS {
+        int result_id PK
+        int student_id FK
+        int course_id FK
+        string academic_session
+        float grade
+        string grade_letter
+    }
+    ATTENDANCE {
+        int attendance_id PK
+        int student_id FK
+        int course_instance_id FK
+        float attendance_percentage
+        date updated_date
+    }
+    COURSE_OUTCOMES {
+        int outcome_id PK
+        int course_id FK
+        string outcome_desc
+        int print_seq
+    }
+    PROGRAM_OUTCOMES {
+        int po_id PK
+        string po_code
+        string po_description
+    }
+    CO_PO_MAPPING {
+        int id PK
+        int course_outcome_id FK
+        int program_outcome_id FK
+        int weightage
+    }
+    COURSE_OBJECTIVES {
+        int obj_id PK
+        int course_id FK
+        string description
+        int print_seq
+    }
+    COURSE_DESCRIPTION {
+        int desc_id PK
+        int course_id FK
+        string topic
+        int duration_weeks
+    }
+    TEXT_BOOKS {
+        int book_id PK
+        int course_id FK
+        string title
+        string type
+    }
+    REFERENCE_BOOKS {
+        int ref_id PK
+        int course_id FK
+        string title
+        string type
+    }
+    EVALUATION_DETAILS {
+        int eval_id PK
+        int course_id FK
+        string component_name
+        float weightage_percent
+    }
+    COURSE_PREREQUISITES {
+        int id PK
+        int course_id FK
+        int prerequisite_course_id FK
+    }
+    COURSE_EQUIVALENTS {
+        int id PK
+        int course_id FK
+        int equivalent_course_id FK
+    }
+    COORDINATOR {
+        int id PK
+        int faculty_id FK
+        int student_id FK
+        string academic_session
+    }
+
+    USERS ||--o| STUDENTS : "profile"
+    USERS ||--o| FACULTY : "profile"
+    FACULTY ||--o{ STUDENTS : "advises"
+    COURSE_MASTER ||--o{ COURSE_INSTANCE : "instance"
+    FACULTY ||--o{ COURSE_INSTANCE : "teaches"
+    STUDENTS ||--o{ STUDENT_REGISTRATION : "header"
+    STUDENT_REGISTRATION ||--o{ STUDENT_REGISTRATION_COURSES : "lines"
+    COURSE_INSTANCE ||--o{ STUDENT_REGISTRATION_COURSES : "offering"
+    STUDENTS ||--o{ RESULTS : "has"
+    COURSE_MASTER ||--o{ RESULTS : "for_course"
+    STUDENTS ||--o{ ATTENDANCE : "tracked"
+    COURSE_INSTANCE ||--o{ ATTENDANCE : "for_instance"
+    COURSE_MASTER ||--o{ COURSE_OUTCOMES : "outcomes"
+    COURSE_MASTER ||--o{ COURSE_OBJECTIVES : "objectives"
+    COURSE_MASTER ||--o{ COURSE_DESCRIPTION : "syllabus"
+    COURSE_MASTER ||--o{ TEXT_BOOKS : "textbooks"
+    COURSE_MASTER ||--o{ REFERENCE_BOOKS : "references"
+    COURSE_MASTER ||--o{ EVALUATION_DETAILS : "evaluation"
+    COURSE_MASTER ||--o{ COURSE_PREREQUISITES : "prereqs"
+    COURSE_MASTER ||--o{ COURSE_EQUIVALENTS : "equivalents"
+    COURSE_OUTCOMES ||--o{ CO_PO_MAPPING : "maps_to"
+    PROGRAM_OUTCOMES ||--o{ CO_PO_MAPPING : "mapped_from"
+    FACULTY ||--o{ COORDINATOR : "assigned_adv"
+    STUDENTS ||--o{ COORDINATOR : "assigned_stud"
+</script>
+
+<script id="data-core" type="text/plain">
+erDiagram
+    SYSTEM_CONFIG {
+        string config_key PK
+        string config_value
+    }
+    USERS {
+        int user_id PK
+        string role
+        int student_id FK
+        int faculty_id FK
+    }
+    FACULTY {
+        int faculty_id PK
+        int user_id FK
+        string faculty_name
+        string department
+    }
+    STUDENTS {
+        int student_id PK
+        int user_id FK
+        string enrollment_no
+        string name
+        int advisor_id FK
+        string status
+    }
+    COORDINATOR {
+        int id PK
+        int faculty_id FK
+        int student_id FK
+    }
+    USERS ||--o| STUDENTS : "id"
+    USERS ||--o| FACULTY : "id"
+    FACULTY ||--o{ STUDENTS : "advisor"
+    FACULTY ||--o{ COORDINATOR : "adv"
+    STUDENTS ||--o{ COORDINATOR : "adv"
+</script>
+
+<script id="data-course" type="text/plain">
+erDiagram
+    COURSE_MASTER {
+        int course_id PK
+        string course_code
+        string course_title
+        int credits
+    }
+    COURSE_INSTANCE {
+        int instance_id PK
+        int course_id FK
+        int faculty_id FK
+        string academic_session
+    }
+    COURSE_PREREQUISITES {
+        int id PK
+        int course_id FK
+        int prerequisite_course_id FK
+    }
+    COURSE_OUTCOMES {
+        int outcome_id PK
+        int course_id FK
+        string outcome_desc
+    }
+    COURSE_DESCRIPTION {
+        int desc_id PK
+        int course_id FK
+        string topic
+    }
+    TEXT_BOOKS {
+        int book_id PK
+        int course_id FK
+        string title
+    }
+    EVALUATION_DETAILS {
+        int eval_id PK
+        int course_id FK
+        string component_name
+        float weightage_percent
+    }
+    COURSE_MASTER ||--o{ COURSE_INSTANCE : "offered"
+    COURSE_MASTER ||--o{ COURSE_PREREQUISITES : "prereqs"
+    COURSE_MASTER ||--o{ COURSE_OUTCOMES : "outcomes"
+    COURSE_MASTER ||--o{ COURSE_DESCRIPTION : "syllabus"
+    COURSE_MASTER ||--o{ TEXT_BOOKS : "books"
+    COURSE_MASTER ||--o{ EVALUATION_DETAILS : "evaluation"
+</script>
+
+<script id="data-reg" type="text/plain">
+erDiagram
+    STUDENTS {
+        int student_id PK
+        string enrollment_no
+    }
+    STUDENT_REGISTRATION {
+        int reg_id PK
+        int student_id FK
+        string status
+    }
+    STUDENT_REGISTRATION_COURSES {
+        int id PK
+        int reg_id FK
+        int course_instance_id FK
+    }
+    COURSE_INSTANCE {
+        int instance_id PK
+        int course_id FK
+    }
+    RESULTS {
+        int result_id PK
+        int student_id FK
+        int course_id FK
+        string grade_letter
+    }
+    ATTENDANCE {
+        int attendance_id PK
+        int student_id FK
+        int course_instance_id FK
+        float attendance_percentage
+    }
+    STUDENTS ||--o{ STUDENT_REGISTRATION : "header"
+    STUDENT_REGISTRATION ||--o{ STUDENT_REGISTRATION_COURSES : "lines"
+    COURSE_INSTANCE ||--o{ STUDENT_REGISTRATION_COURSES : "offer"
+    STUDENTS ||--o{ RESULTS : "has"
+    STUDENTS ||--o{ ATTENDANCE : "has"
+</script>
+
+<script id="data-obe" type="text/plain">
+erDiagram
+    COURSE_MASTER {
+        int course_id PK
+        string course_code
+    }
+    COURSE_OUTCOMES {
+        int outcome_id PK
+        int course_id FK
+        string outcome_desc
+    }
+    PROGRAM_OUTCOMES {
+        int po_id PK
+        string po_code
+    }
+    CO_PO_MAPPING {
+        int id PK
+        int course_outcome_id FK
+        int program_outcome_id FK
+        int weightage
+    }
+    COURSE_MASTER ||--o{ COURSE_OUTCOMES : "defines"
+    COURSE_OUTCOMES ||--o{ CO_PO_MAPPING : "maps"
+    PROGRAM_OUTCOMES ||--o{ CO_PO_MAPPING : "maps"
+</script>
+
+<script>
+mermaid.initialize({ startOnLoad: false, theme: 'dark', er: { diagramPadding: 30, entityPadding: 15, fontSize: 12 } });
+
+async function showView(v) {
+  // Toggle UI
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  if (event) event.target.classList.add('active');
+
+  const diagramView = document.getElementById('diagram-view');
+  const tableView = document.getElementById('table-view');
+  const mainMermaid = document.getElementById('main-mermaid');
+
+  if (v === 'ref') {
+    diagramView.style.display = 'none';
+    tableView.style.display = 'block';
+  } else {
+    tableView.style.display = 'none';
+    diagramView.style.display = 'block';
+
+    // Update diagram text
+    const dataSrc = document.getElementById('data-' + v);
+    if (dataSrc) {
+      mainMermaid.innerHTML = dataSrc.innerHTML;
+      mainMermaid.removeAttribute('data-processed');
+      await mermaid.run({ nodes: [mainMermaid] });
+    }
+  }
+}
+
+// First render
+window.onload = () => { showView('full'); };
+</script>
+</body>
+</html>

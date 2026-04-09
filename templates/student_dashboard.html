@@ -1,63 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
+    <title>Student Dashboard | VNIT Nagpur</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        body { background-color: #f8f9fa; padding: 30px; }
-        .welcome { margin-bottom: 30px; }
-        .logout { float: right; }
-        .tab-content { background: white; padding: 30px; border: 1px solid #dee2e6; border-top: none; border-radius: 0 0 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .nav-tabs .nav-link { font-weight: 600; font-size: 1.15rem; }
-        .nav-tabs .nav-link.active { color: #0d6efd; border-color: #0d6efd #0d6efd #fff; }
-        h4 { color: #343a40; margin-bottom: 20px; }
-        .text-muted { font-style: italic; }
+        :root {
+            --vnit-blue: #003366;
+            --vnit-gold: #ffcc00;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #f4f6f9;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--vnit-blue);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Sidebar Glassmorphism */
+        .dashboard-container {
+            padding: 40px 0;
+        }
+
+        .welcome-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            background-image: linear-gradient(135deg, white 0%, #f0f7ff 100%);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .profile-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--vnit-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Navigation Cards */
+        .nav-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            cursor: pointer;
+            text-decoration: none !important;
+            color: inherit;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            border-color: var(--vnit-gold);
+        }
+
+        .card-icon-container {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .bg-blue-light {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .bg-green-light {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .bg-purple-light {
+            background: #f3e8ff;
+            color: #7e22ce;
+        }
+
+        .form-glass {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            border: 1px solid white;
+            padding: 1.5rem;
+        }
+
+        .btn-vnit {
+            background: var(--vnit-blue);
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .btn-vnit:hover {
+            background: #002244;
+            color: white;
+        }
+
+        .section-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #6b7280;
+        }
+
+        /* Stats Row */
+        .stat-pill {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .nav-pills .nav-link {
+            color: var(--vnit-blue);
+            border: 1px solid transparent;
+        }
+        .nav-pills .nav-link.active {
+            background-color: var(--vnit-blue) !important;
+            color: white !important;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center welcome">
-        <h2>Welcome, {{ name or 'Student' }}</h2>
-        <a href="/logout" class="btn btn-outline-danger logout">Logout</a>
-    </div>
+    <nav class="navbar navbar-dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="bi bi-mortarboard-fill me-2"></i>
+                VNIT Course Portal
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-outline-light rounded-pill px-3">
+                    <i class="bi bi-box-arrow-left me-1"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
 
-    <ul class="nav nav-tabs" id="studentTabs">
-        <li class="nav-item">
-            <a class="nav-link active" href="/student/examination">Examination</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/student/register_courses">Student Registration</a>
-        </li>
-    </ul>
+    <div class="container dashboard-container">
 
-    <div class="tab-content mt-4">
-        <!-- Examination Tab (this page) -->
-        <div class="tab-pane fade show active" id="examination">
-            <h4>Examination Details</h4>
-            <p class="lead text-muted">
-                Select semester and academic session to view your cleared subjects and backlogs.
-            </p>
-            <p class="text-muted">
-                Click the "Examination" tab above to load your results.
-            </p>
+        <!-- Flash Messages (Alerts) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show animate-fade" role="alert"
+            style="border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Welcome Section -->
+        <div class="welcome-card animate-fade">
+            <div>
+                <span class="section-tag">Student Profile</span>
+                <h1 class="fw-800 mt-2">Welcome Back, {{ name or 'Student' }}!</h1>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <div class="stat-pill"><i class="bi bi-person-badge text-primary"></i> {{ enrollment_no }}</div>
+                    <div class="stat-pill"><i class="bi bi-layers text-success"></i> CGPA: {{ cgpa }}</div>
+                    <div class="stat-pill"><i class="bi bi-geo-alt text-danger"></i> {{ program }}</div>
+                </div>
+            </div>
+            <div class="d-none d-md-block">
+                <div class="profile-icon">
+                    {{ name[0] if name else 'S' }}
+                </div>
+            </div>
         </div>
 
-        <!-- Student Registration Tab (placeholder) -->
-        <div class="tab-pane fade" id="registration">
-            <h4>Course Registration</h4>
-            <p class="lead text-muted">
-                View and register your DC (compulsory) and DE (elective) courses.
-            </p>
-            <p class="text-muted">
-                Click the "Student Registration" tab above to see available courses and generate your PDF.
-            </p>
+        <!-- Action Tabs -->
+        <ul class="nav nav-pills mb-4 animate-fade justify-content-center gap-3" id="dashboardTabs" role="tablist" style="animation-delay: 0.1s; background: white; padding: 10px; border-radius: 50px; border: 1px solid #e5e7eb; width: fit-content; margin: 0 auto 2.5rem auto;">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active rounded-pill px-4 fw-bold" id="overview-tab" data-bs-toggle="pill" data-bs-target="#overview-content" type="button" role="tab">
+                    <i class="bi bi-grid-fill me-2"></i>Dashboard Overview
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill px-4 fw-bold" id="courses-tab" data-bs-toggle="pill" data-bs-target="#courses-content" type="button" role="tab">
+                    <i class="bi bi-book-half me-2"></i>My Enrolled Courses
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="dashboardTabsContent">
+            <!-- TAB 1: OVERVIEW -->
+            <div class="tab-pane fade show active" id="overview-content" role="tabpanel">
+                <!-- Registration Status Alert -->
+                {% if reg_status != 'NONE' %}
+                <div class="alert alert-info d-flex align-items-center animate-fade"
+                    style="border-radius: 20px; border-left: 6px solid #0dcaf0; background: white; box-shadow: 0 10px 25px rgba(0,0,0,0.03); padding: 1.5rem;">
+                    <i class="bi bi-info-circle-fill me-4 fs-3 text-info"></i>
+                    <div class="w-100">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1 text-muted small fw-bold text-uppercase">Academic Status</h6>
+                                <strong>Latest Registration:</strong> Your registration for <strong>{{ reg_session }}</strong>
+                                is currently
+                                <span
+                                    class="badge bg-{{ 'success' if reg_status == 'APPROVED' else 'warning' if reg_status == 'SUBMITTED' else 'secondary' }} rounded-pill px-3">
+                                    {{ reg_status }}
+                                </span>
+                            </div>
+                            <div class="d-flex gap-2">
+                                {% if reg_status == 'APPROVED' %}
+                                <a href="/student/generate_registration_pdf/{{ reg_session }}"
+                                    class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3" target="_blank">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i> View PDF
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row g-4 mt-2 animate-fade" style="animation-delay: 0.2s;">
+                    <!-- Card 1: Registration -->
+                    <div class="col-lg-6">
+                        <div class="nav-card">
+                            <div class="card-icon-container bg-blue-light">
+                                <i class="bi bi-pencil-square"></i>
+                            </div>
+                            <h3>Course Registration</h3>
+                            <p class="text-muted">Register for Departmental Cores (DC) and Electives (DE) for the upcoming
+                                winter/summer session.</p>
+
+                            <div class="form-glass mt-auto">
+                                <form onsubmit="launchReg(event)">
+                                    <div class="row g-3 mt-2">
+                                        <div class="col-12">
+                                            <label class="small text-muted mb-1">Target Academic Session</label>
+                                            <select class="form-select form-select-lg border-0 shadow-sm bg-light"
+                                                id="regSession" required>
+                                                <option value="">-- Select Active Session --</option>
+                                                {% for sess in available_sessions %}
+                                                <option value="{{ sess }}">{{ sess }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 mt-4 py-3 fw-bold rounded-3 shadow">
+                                        Launch Course Registration <i class="bi bi-chevron-right ms-1"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Examination -->
+                    <div class="col-lg-6">
+                        <a href="/student/examination" class="nav-card">
+                            <div class="card-icon-container bg-green-light">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+                            <h3>Examination & Performance</h3>
+                            <p class="text-muted">Analyze your semester-wise grades, check cleared credits, and manage backlog
+                                subjects.</p>
+                            <div class="mt-auto d-flex align-items-center justify-content-between">
+                                <span class="text-success fw-bold">View Results</span>
+                                <i class="bi bi-arrow-right-circle fs-2 text-success"></i>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 3: Profile (Secondary) -->
+                    <div class="col-md-6 col-lg-4">
+                        <a href="/student/profile" class="nav-card shadow-sm" style="background: rgba(255,255,255,0.4);">
+                            <div class="card-icon-container bg-purple-light">
+                                <i class="bi bi-person-gear"></i>
+                            </div>
+                            <h5>Profile Settings</h5>
+                            <p class="small text-muted">Update contact details, address, or password.</p>
+                        </a>
+                    </div>
+
+                    <!-- Card 4: Downloads -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="nav-card shadow-sm" style="background: rgba(255,255,255,0.4);">
+                            <div class="card-icon-container bg-purple-light">
+                                <i class="bi bi-cloud-download"></i>
+                            </div>
+                            <h5>Important Downloads</h5>
+                            <p class="small text-muted">Syllabus, Academic Calendar, and Handbooks.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: MY COURSES -->
+            <div class="tab-pane fade" id="courses-content" role="tabpanel">
+                <div class="animate-fade">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold"><i class="bi bi-journal-text me-2 text-primary"></i>Enrolled Courses ({{ reg_session }})</h3>
+                        {% if reg_status == 'APPROVED' %}
+                        <div class="badge bg-success rounded-pill px-3">APPROVED BY ADVISOR</div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if active_courses %}
+                    <div class="row g-4">
+                        {% for c in active_courses %}
+                        <div class="col-md-6 col-xl-4">
+                            <div class="p-4 border-0 rounded-4 bg-white shadow-sm h-100 position-relative transition-hover" 
+                                 style="border-top: 5px solid {{ '#10b981' if c[3]|int >= 75 else '#ef4444' if c[3]|int > 0 else '#64748b' }} !important;">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <div class="badge bg-light text-primary mb-2">{{ c[0] }}</div>
+                                        <h5 class="fw-bold mb-1">{{ c[1] }}</h5>
+                                        <div class="text-muted small"><i class="bi bi-person-circle"></i> {{ c[2] }}</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="h4 fw-800 mb-0 {{ 'text-success' if c[3]|int >= 75 else 'text-danger' if c[3]|int > 0 else 'text-muted' }}">
+                                            {{ c[3]|int }}%
+                                        </div>
+                                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.6rem;">Attendance</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="progress mb-3" style="height: 8px; background-color: #f1f5f9; border-radius: 10px;">
+                                    <div class="progress-bar {{ 'bg-success' if c[3]|int >= 75 else 'bg-danger' if c[3]|int > 0 else 'bg-secondary' }}" 
+                                         role="progressbar" style="width: {{ c[3]|int }}%; border-radius: 10px;"></div>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
+                                    <span class="small text-muted">Status: {{ 'On Track' if c[3]|int >= 75 else 'Critical' if c[3]|int > 0 else 'In Progress' }}</span>
+                                    {% if c[3]|int < 75 and c[3]|int > 0 %}
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle"><i class="bi bi-exclamation-triangle"></i> Shortage</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5 bg-white rounded-4 border border-dashed">
+                        <i class="bi bi-slash-circle fs-1 text-muted mb-3 d-block"></i>
+                        <h5 class="text-muted">No course data available for the current session.</h5>
+                        <p class="small text-muted">Once your registration is approved, your enrolled courses will appear here.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <footer class="mt-5 py-4 text-center text-muted">
+        <small>VNIT Nagpur Student Services &copy; 2026 | Built for Excellence</small>
+    </footer>
+
+    <script>
+        function launchReg(event) {
+            event.preventDefault();
+            const session = document.getElementById('regSession').value;
+            if (session) {
+                window.location.href = `/student/register_courses?session=${encodeURIComponent(session)}`;
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

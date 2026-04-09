@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Academic Performance | VNIT Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .vnit-header { background: #003366; color: white; padding: 2rem 0; border-bottom: 5px solid #ffcc00; }
+        .gpa-card { border-left: 5px solid #003366; background: #fff; transition: transform 0.2s; }
+        .gpa-card:hover { transform: scale(1.02); }
+        .badge-gpa { font-size: 1.2rem; padding: 8px 15px; border-radius: 10px; }
+        .table-results th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="vnit-header mb-4">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <a href="/admin/dashboard" class="text-white text-decoration-none mb-2 d-inline-block">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+            <h2>Performance & Result Audit</h2>
+        </div>
+        <div class="text-end">
+            <button class="btn btn-warning shadow-sm fw-bold" onclick="window.print()">
+                <i class="bi bi-printer me-2"></i> Print Gazette
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+    
+    <!-- Top Performers Summary -->
+    <h5 class="mb-3 fw-bold"><i class="bi bi-trophy text-warning me-2"></i> Cumulative Performance (CGPA)</h5>
+    <div class="row g-3 mb-5">
+        {% for s in performance %}
+        <div class="col-md-4">
+            <div class="card gpa-card shadow-sm p-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="mb-0 fw-bold">{{ s[1] }}</h6>
+                        <small class="text-muted">{{ s[0] }} | {{ s[2] }}</small>
+                    </div>
+                    <span class="badge bg-primary badge-gpa shadow-sm">{{ s[5] }}</span>
+                </div>
+                <div class="mt-2 small text-muted">
+                    Credits Earned: <strong>{{ s[4] }}</strong> | Grade Points: {{ s[3] }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Detailed Ledger -->
+    <div class="card shadow border-0">
+        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">Detailed Result Ledger</h5>
+            <input type="text" id="resultSearch" class="form-control w-25" placeholder="Filter by student or course..." onkeyup="filterResults()">
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 sticky-header" id="resultsTable">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th>Enrollment</th>
+                        <th>Student Name</th>
+                        <th>Course</th>
+                        <th class="text-center">Score</th>
+                        <th class="text-center">Grade</th>
+                        <th class="text-center">Session</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in results %}
+                    <tr class="result-row">
+                        <td><strong>{{ r[0] }}</strong></td>
+                        <td>{{ r[1] }}</td>
+                        <td>
+                            <span class="fw-bold text-primary">{{ r[2] }}</span><br>
+                            <small class="text-muted">{{ r[3] }}</small>
+                        </td>
+                        <td class="text-center fw-bold">{{ r[4] }}</td>
+                        <td class="text-center">
+                            <span class="badge {% if r[5] == 'FF' %}bg-danger{% else %}bg-success{% endif %} px-3">
+                                {{ r[5] }}
+                            </span>
+                        </td>
+                        <td class="text-center small text-muted">{{ r[6] }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="text-center py-5">No results found in the database.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filterResults() {
+        const input = document.getElementById('resultSearch').value.toUpperCase();
+        const rows = document.querySelectorAll('.result-row');
+        rows.forEach(row => {
+            const text = row.innerText.toUpperCase();
+            row.style.display = text.indexOf(input) > -1 ? "" : "none";
+        });
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

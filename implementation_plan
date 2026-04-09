@@ -1,0 +1,392 @@
+# Course Registration Portal — Full Project Assessment & Roadmap
+
+## 🔍 Where You Currently Are
+
+After deep analysis of every file in your `course_portal` workspace, here is an **honest picture** of what is built vs. what is missing.
+
+---
+
+## ✅ What Is Already Built (Completed Foundations)
+
+### Layer 1 — Flask Application Skeleton
+| Component | File | Status |
+|-----------|------|--------|
+| App entry point & Blueprint registration | `app.py` | ✅ Done |
+| Oracle DB connection | `config.py` | ✅ Done (hardcoded creds—needs env vars) |
+| Auth Blueprint (login/register/logout) | `auth_routes.py` | ✅ Partial |
+| Student Blueprint | `student_routes.py` | ✅ Partial |
+| Admin Blueprint | `admin_routes.py` | ✅ Partial |
+| Faculty Blueprint | `faculty_routes.py` | ✅ Skeleton |
+| Course Blueprint | `course_routes.py` | ✅ Skeleton |
+
+### Layer 2 — Database Schema
+| Table | Status |
+|-------|--------|
+| `users` | ✅ Created |
+| `students` | ✅ Created |
+| `faculty` | ✅ Created |
+| `course_master` | ✅ Created |
+| `course_prerequisites` | ✅ Created |
+| `course_objectives` | ✅ Created |
+| `course_outcomes` | ✅ Created |
+| `course_description` | ✅ Created |
+| `text_books` | ✅ Created |
+| `reference_books` | ✅ Created |
+| `course_instance` | ✅ Created |
+| `student_registration` | ✅ Created |
+| `registration_courses` | ✅ Created |
+| `results` | ✅ Created |
+| `attendance` | ✅ Created |
+| `coordinator` | ✅ Created |
+
+### Layer 3 — Core Student Flows
+| Feature | Status |
+|---------|--------|
+| Student login (by role) | ✅ Works |
+| New student self-registration form | ✅ Works |
+| Student dashboard (2 tabs) | ✅ Works |
+| Register courses (DC mandatory, DE pick 2) | ✅ Works |
+| DC/DE/Backlog course listing | ✅ Works |
+| Course details page (objectives, outcomes, books) | ✅ Works |
+| PDF registration form generation (ReportLab) | ✅ Works |
+| View registered courses | ✅ Works |
+| Examination page (semester/session input) | ✅ Template exists |
+
+### Layer 4 — Core Admin Flows
+| Feature | Status |
+|---------|--------|
+| Admin login | ✅ Works |
+| Add course to course_master | ✅ Works |
+| Add faculty | ✅ Works |
+| Create course instance (assign faculty) | ✅ Works |
+| View all students | ✅ Works |
+| Approve pending students | ✅ Works |
+| Export students to Excel | ✅ Works |
+| View student registrations | ✅ Works |
+
+---
+
+## ❌ What Is Missing / Broken (Gap Analysis)
+
+### 🔴 Critical Bugs & Security Issues
+
+| Issue | Location | Impact |
+|-------|----------|--------|
+| **Passwords stored in plain text** | `auth_routes.py` L47, L174 | 🔴 CRITICAL — must hash with `werkzeug.security` |
+| **Secret key is hardcoded** | `app.py` L9 | 🔴 High — needs `os.environ` |
+| **No CSRF protection** | All forms | 🔴 High — add `flask-wtf` |
+| **`student_id` linked via enrollment_no** | `auth_routes.py` L60 | 🔴 Bug — should link via `user_id→student_id` FK in `users` table |
+| **`student_registration_courses` table** used in routes but **not in schema.sql** | `student_routes.py` | 🔴 Schema mismatch — schema has `registration_courses` but code uses `student_registration_courses` |
+| **`system_config` table** referenced in code | `student_routes.py` L16 | 🔴 Not in schema — must add |
+| **Password column mismatch** | `admin_routes.py` L236 | 🔴 Schema has `password_hash`, code inserts plain `password` |
+
+### 🟡 Missing Pages / Features
+
+| Missing Feature | Priority |
+|----------------|----------|
+| **Forget password flow** (student + admin) | 🟡 High |
+| **Admin: Edit/Delete course** (CRUD) | 🟡 High |
+| **Admin: Edit/Delete faculty** (CRUD) | 🟡 High |
+| **Admin: Manage course instances** (edit/delete) | 🟡 High |
+| **Admin: Full course details entry** (objectives, outcomes, books, description) | 🟡 High |
+| **Admin: Manage student records** (edit/delete) | 🟡 High |
+| **Faculty dashboard** (upload attendance per course instance) | 🟡 High |
+| **Attendance upload page** (faculty uploads per student) | 🟡 High |
+| **Examination results page** (shows cleared/backlog subjects) | 🟡 High |
+| **Course Coordinator table** (1 coordinator per 10 students) | 🟡 Medium |
+| **Missing tables**: `system_config`, `student_registration_courses`, `course_equivalents`, `evaluation_details`, `co_po_mapping`, `program_outcomes` | 🟡 High |
+| **Semester-wise backlog detection** (from results table) | 🟡 Medium |
+| **Admin: toggle registration open/closed** (system_config) | 🟡 Medium |
+| **Faculty: course details entry** (course coordinator can enter syllabus) | 🟡 Medium |
+| **UI/UX Overhaul** — all pages need professional design | 🟡 High |
+
+### 🟢 Nice-to-Have (Production Readiness)
+
+| Item | Priority |
+|------|----------|
+| Oracle Sequences for all tables | 🟢 Medium |
+| `.env` file for credentials | 🟢 High |
+| Gunicorn/Waitress for production server | 🟢 Medium |
+| `requirements.txt` | 🟢 Medium |
+| Logging system (Python logging module) | 🟢 Medium |
+| Session timeout | 🟢 Medium |
+| Input validation (server-side) | 🟢 High |
+| Email notifications (SMTP) for registration approval | 🟢 Low |
+
+---
+
+## 📋 Detailed Upgrade Roadmap (Phase-by-Phase)
+
+---
+
+### 🔷 PHASE 1 — Fix Critical Bugs & Schema Alignment (Week 1)
+> **Goal**: Make the existing code actually run without crashes.
+
+#### 1.1 Fix Database Schema
+- [ ] Rename `registration_courses` → `student_registration_courses` (or update all queries in code)
+- [ ] Add `student_id` column to `users` table (FK to students)
+- [ ] Add `system_config` table: `(config_key VARCHAR2(50), config_value VARCHAR2(100))`
+- [ ] Add sequence objects for all tables (`STUDENTS_SEQ`, `USERS_SEQ`, `FACULTY_SEQ`, etc.)
+- [ ] Add missing tables: `course_equivalents`, `evaluation_details`, `program_outcomes`, `co_po_mapping`
+- [ ] Add `section`, `batch`, `slot` columns to `course_instance`
+
+#### 1.2 Fix Authentication
+- [ ] Hash all passwords using `werkzeug.security.generate_password_hash`
+- [ ] Verify using `check_password_hash` in login
+- [ ] Move `SECRET_KEY`, DB credentials to `.env` file (use `python-dotenv`)
+- [ ] Add `flask-wtf` for CSRF on all forms
+
+#### 1.3 Fix Student Login Session
+- [ ] After login, fetch `student_id` via `users.student_id` FK (not via enrollment_no)
+- [ ] Store `faculty_id` in session for faculty login
+
+---
+
+### 🔷 PHASE 2 — Complete Admin CRUD Panel (Week 2)
+> **Goal**: Admin can manage all data without touching Oracle SQL Developer.
+
+#### 2.1 Course Master Management
+- [ ] **List all courses** (paginated table with search)
+- [ ] **Add course** (with L, T, P, credits, program, type — already partial)
+- [ ] **Edit course** (pre-filled form)
+- [ ] **Delete course** (with confirmation modal)
+- [ ] **Add/Edit/Delete** course objectives (one per form row, ordering)
+- [ ] **Add/Edit/Delete** course outcomes (one per form row)
+- [ ] **Add/Edit/Delete** course description topics (with duration_weeks)
+- [ ] **Add/Edit/Delete** text books and reference books
+- [ ] **Add/Edit/Delete** prerequisites (dropdown from existing courses)
+- [ ] **Add/Edit/Delete** evaluation details (quiz, mid, end-sem weights)
+- [ ] **CO-PO mapping** (matrix form — course outcomes × program outcomes with weightage)
+
+#### 2.2 Faculty Management
+- [ ] **List all faculty** (table with edit/delete buttons)
+- [ ] **Add faculty** → creates user + faculty record (already partial)
+- [ ] **Edit faculty** (name, email, department)
+- [ ] **Delete faculty** (with cascade awareness)
+- [ ] **Assign faculty to course instance** (dropdown)
+
+#### 2.3 Course Instance Management
+- [ ] **List course instances** (per session filter)
+- [ ] **Create course instance** (already partial)
+- [ ] **Edit instance** (change faculty, section, batch, slot)
+- [ ] **Delete instance**
+- [ ] **Open/Close course registration** (set `system_config` value)
+
+#### 2.4 Student Record Management
+- [ ] **List students** (with search/filter by program, semester)
+- [ ] **Approve/Reject** pending students
+- [ ] **Edit student** details (semester, advisor)
+- [ ] **View student's registered courses** (per session)
+- [ ] **Enter results** for a student (grade per course)
+- [ ] **Assign course coordinator** (1 per every 10 students)
+- [ ] **Export** registrations to Excel
+
+---
+
+### 🔷 PHASE 3 — Complete Student Portal (Week 3)
+> **Goal**: Students can do everything they need without admin intervention.
+
+#### 3.1 Examination Page
+- [ ] **Semester + session selector** form
+- [ ] Fetch and display **subjects cleared** (grade ≥ threshold)
+- [ ] Fetch and display **backlogs** (grade < threshold or absent)
+- [ ] Show summary statistics (credits cleared, credits pending)
+
+#### 3.2 Student Registration Page Enhancements
+- [ ] Show **registration window status** (open/closed from system_config)
+- [ ] Show **backlogs as mandatory DC** at the top
+- [ ] Show **DC courses table** — all mandatory, cannot deselect
+- [ ] Show **DE courses table** — checkbox, enforce exactly 2 selection via JS
+- [ ] Add **Course Faculty** column (faculty name from course_instance)
+- [ ] Add **Course Details** link/button → navigates to course_details page
+- [ ] Add `course_faculty` and `course_details` columns as requested
+
+#### 3.3 Course Details Page Enhancements
+Ensure all required subtables are displayed:
+- [ ] Course Master info (code, title, type, L-T-P, credits, program)
+- [ ] Prerequisites list
+- [ ] Course equivalents
+- [ ] Course objectives (numbered, in print_seq order)
+- [ ] Course outcomes (numbered, in print_seq order)
+- [ ] Weekly topics / Course description
+- [ ] Text books with type
+- [ ] Reference books with type
+- [ ] Evaluation details (weights table)
+- [ ] CO-PO mapping matrix (heatmap style)
+
+#### 3.4 PDF Registration Form
+- [ ] Already works — Enhance with VNIT letterhead formatting
+- [ ] Include advisor signature section
+- [ ] Show DC / DE / Backlog sections separately
+- [ ] Add total credits count per type
+
+#### 3.5 Forget Password
+- [ ] Simple security question model (Q&A stored during registration)
+- [ ] Or: admin-reset-and-email flow
+
+---
+
+### 🔷 PHASE 4 — Faculty Portal (Week 4)
+> **Goal**: Faculty can view their courses and upload attendance.
+
+#### 4.1 Faculty Dashboard
+- [ ] Show list of courses assigned in current session
+- [ ] For each course: enrolled student count, attendance stats
+
+#### 4.2 Attendance Upload
+- [ ] Select course instance from dropdown
+- [ ] Show list of enrolled students (from `student_registration_courses`)
+- [ ] Enter `attendance_percentage` per student
+- [ ] Save to `attendance` table via CRUD
+
+#### 4.3 Course Coordinator View
+- [ ] Show the coordinator's 10 assigned students
+- [ ] View their registrations and attendance
+
+---
+
+### 🔷 PHASE 5 — UI/UX Overhaul (Parallel with Phases 2-4)
+> **Goal**: Production-quality, professional-looking interface.
+
+#### 5.1 Design System
+- [ ] Create `static/css/main.css` with:
+  - CSS variables (colors, fonts, spacing)
+  - Dark/Light mode toggle
+  - Google Fonts (Inter or Poppins)
+  - Responsive grid layouts
+- [ ] Create `templates/base.html` (shared navbar, sidebar, footer)
+- [ ] Create `templates/admin_base.html` (admin sidebar with all menu items)
+- [ ] Create `templates/student_base.html` (student nav with Examination + Registration tabs)
+
+#### 5.2 Page Redesigns
+- [ ] **Login page** — card-based, role selector (Student/Admin/Faculty) with smooth transition
+- [ ] **Student dashboard** — tab-based with animated transitions
+- [ ] **Registration page** — interactive table with live credit counter
+- [ ] **Admin dashboard** — sidebar with quick stats cards
+- [ ] **Course details page** — tabbed (Info / Objectives / Outcomes / Syllabus / Books / Evaluation)
+- [ ] **Faculty dashboard** — cards per course with attendance upload button
+
+---
+
+### 🔷 PHASE 6 — Production Deployment (Week 5-6)
+> **Goal**: Real-world deployable website.
+
+#### 6.1 Security Hardening
+- [ ] Password hashing everywhere
+- [ ] CSRF tokens on all forms
+- [ ] SQL injection prevention (already using parameterized queries — ✅ good)
+- [ ] Session expiry (set `PERMANENT_SESSION_LIFETIME`)
+- [ ] HTTPS enforcement (via nginx/Apache reverse proxy)
+- [ ] Remove all `debug=True` from `app.run()`
+
+#### 6.2 Production Server Setup
+- [ ] Install `waitress` (Windows-compatible WSGI server) or `gunicorn` (Linux)
+- [ ] Create `wsgi.py` entry point
+- [ ] Create `requirements.txt` with pinned versions
+- [ ] Create `.env` file (excluded from git via `.gitignore`)
+
+#### 6.3 Database Improvements
+- [ ] Add Oracle sequences for all tables (avoid `MAX(id)+1` pattern)
+- [ ] Add indexes on frequently-queried columns
+- [ ] Add `ON DELETE CASCADE` / `ON DELETE SET NULL` constraints
+- [ ] Add audit columns (`created_at`, `updated_at`, `created_by`)
+
+#### 6.4 Deployment
+- [ ] Document deployment steps in `README.md`
+- [ ] Set up Oracle XE or Oracle Cloud as production DB
+- [ ] Configure Windows IIS + `wfastcgi` **OR** deploy to Linux VM with nginx + gunicorn
+
+---
+
+## 🗂️ Missing Tables to Add to Schema
+
+```sql
+-- Already in code, missing from schema
+CREATE TABLE student_registration_courses (
+    id NUMBER PRIMARY KEY,
+    student_id NUMBER NOT NULL,
+    course_instance_id NUMBER NOT NULL,
+    academic_session VARCHAR2(20),
+    registration_date DATE DEFAULT SYSDATE,
+    CONSTRAINT fk_src_student FOREIGN KEY (student_id) REFERENCES students(student_id),
+    CONSTRAINT fk_src_instance FOREIGN KEY (course_instance_id) REFERENCES course_instance(instance_id)
+);
+
+-- Used in student_routes but missing
+CREATE TABLE system_config (
+    config_key VARCHAR2(50) PRIMARY KEY,
+    config_value VARCHAR2(200),
+    updated_at DATE DEFAULT SYSDATE
+);
+
+-- You requested these
+CREATE TABLE program_outcomes (
+    po_id NUMBER PRIMARY KEY,
+    po_code VARCHAR2(10),
+    po_description VARCHAR2(500)
+);
+
+CREATE TABLE co_po_mapping (
+    id NUMBER PRIMARY KEY,
+    course_outcome_id NUMBER,
+    program_outcome_id NUMBER,
+    weightage NUMBER(3),
+    CONSTRAINT fk_copo_co FOREIGN KEY (course_outcome_id) REFERENCES course_outcomes(outcome_id),
+    CONSTRAINT fk_copo_po FOREIGN KEY (program_outcome_id) REFERENCES program_outcomes(po_id)
+);
+
+CREATE TABLE evaluation_details (
+    eval_id NUMBER PRIMARY KEY,
+    course_id NUMBER,
+    component_name VARCHAR2(100),
+    weightage_percent NUMBER(5,2),
+    CONSTRAINT fk_eval_course FOREIGN KEY (course_id) REFERENCES course_master(course_id)
+);
+
+CREATE TABLE course_equivalents (
+    id NUMBER PRIMARY KEY,
+    course_id NUMBER,
+    equivalent_course_id NUMBER,
+    CONSTRAINT fk_ceq_course FOREIGN KEY (course_id) REFERENCES course_master(course_id),
+    CONSTRAINT fk_ceq_equiv FOREIGN KEY (equivalent_course_id) REFERENCES course_master(course_id)
+);
+
+-- Coordinator: 1 faculty per 10 students
+CREATE TABLE course_coordinator (
+    id NUMBER PRIMARY KEY,
+    faculty_id NUMBER,
+    student_id NUMBER,
+    academic_session VARCHAR2(20),
+    CONSTRAINT fk_cc_faculty FOREIGN KEY (faculty_id) REFERENCES faculty(faculty_id),
+    CONSTRAINT fk_cc_student FOREIGN KEY (student_id) REFERENCES students(student_id)
+);
+```
+
+---
+
+## 📊 Progress Summary
+
+| Phase | Description | Status | Completion |
+|-------|-------------|--------|------------|
+| Phase 0 | Project scaffold + Oracle connection | ✅ Done | 100% |
+| Phase 1 | Critical bug fixes + schema alignment | ⚠️ Partially broken | ~20% |
+| Phase 2 | Admin CRUD panel | ⚠️ Very partial | ~25% |
+| Phase 3 | Full student portal | ⚠️ Partial | ~40% |
+| Phase 4 | Faculty portal | ⚠️ Skeleton only | ~10% |
+| Phase 5 | UI/UX overhaul | ❌ Raw HTML | ~5% |
+| Phase 6 | Production deployment | ❌ Not started | 0% |
+
+> **Overall project completion: ~25%**
+
+---
+
+## 🚀 Recommended Next Steps (Priority Order)
+
+1. **Fix the schema-code mismatch first** — rename `registration_courses` to `student_registration_courses`, add `system_config`, add sequences
+2. **Add password hashing** — 1-hour task, massive security improvement
+3. **Move credentials to `.env`** — protect your Oracle password
+4. **Complete the Admin CRUD for courses** — this is the core data entry module
+5. **Build the full Faculty attendance module**
+6. **Design overhaul** — this is what makes it "production-ready"
+
+> Tell me which phase you want to tackle first and I'll implement it completely!
