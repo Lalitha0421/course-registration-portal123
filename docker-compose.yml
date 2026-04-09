@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: course_portal_db
+    ports:
+      - "1521:1521"
+    environment:
+      - ORACLE_PASSWORD=${DB_PASSWORD:-system_password}
+      - APP_USER=${DB_USER:-c##vnit_user}
+      - APP_USER_PASSWORD=${DB_PASSWORD:-vnit_pass}
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+      - ./sql:/docker-entrypoint-initdb.d  # Automatically initialize schema on first run
+
+  web:
+    build: .
+    container_name: course_portal_web
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - DB_USER=${DB_USER:-c##vnit_user}
+      - DB_PASSWORD=${DB_PASSWORD:-vnit_pass}
+      - DB_DSN=db:1521/XE
+      - FLASK_SECRET=${FLASK_SECRET:-super-secret-key}
+    restart: always
+
+volumes:
+  oracle_data:

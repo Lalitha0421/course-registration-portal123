@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ basic[1] }} | Syllabus Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --vnit-blue: #003366;
+            --vnit-gold: #ffcc00;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+        .header-bg {
+            background: linear-gradient(135deg, #003366 0%, #0055aa 100%);
+            color: white;
+            padding: 5rem 0 7rem 0;
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        .detail-container {
+            margin-top: -80px;
+            padding-bottom: 5rem;
+        }
+        .detail-card {
+            background: white;
+            border-radius: 28px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            padding: 3rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+            margin-bottom: 2.5rem;
+        }
+        .section-title {
+            color: var(--vnit-blue);
+            font-weight: 800;
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--vnit-gold);
+            border-radius: 2px;
+        }
+        .info-pill {
+            background: #f8fafc;
+            padding: 15px 25px;
+            border-radius: 16px;
+            border: 1px solid #edf2f7;
+            height: 100%;
+            transition: all 0.2s ease;
+        }
+        .info-pill:hover {
+            background: white;
+            border-color: var(--vnit-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .table {
+            border: 1px solid #f1f5f9;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 0;
+        }
+        .table th {
+            background: #f8fafc;
+            color: var(--vnit-blue);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            padding: 1.2rem;
+        }
+        .table td {
+            padding: 1.2rem;
+            border-top: 1px solid #f1f5f9;
+        }
+        .co-badge {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--vnit-blue);
+            color: white;
+            border-radius: 10px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .header-bg { background: white !important; color: black !important; padding: 1rem; box-shadow: none; border-bottom: 2px solid #000; }
+            .detail-container { margin-top: 20px; }
+            .detail-card { box-shadow: none; border: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-bg no-print">
+        <div class="container text-center">
+            <div class="badge bg-warning text-dark px-4 py-2 rounded-pill fw-bold mb-3 shadow-sm">{{ basic[2] }} COURSE</div>
+            <h1 class="display-3 fw-800 mb-2">{{ basic[0] }}</h1>
+            <h2 class="h2 fw-300 opacity-90">{{ basic[1] }}</h2>
+            <p class="mt-4 fw-600"><i class="bi bi-mortarboard-fill me-2"></i>Programme: {{ basic[3] }}</p>
+        </div>
+    </div>
+
+    <div class="container detail-container">
+        <div class="d-flex justify-content-between align-items-center mb-5 no-print">
+            <a href="javascript:history.back()" class="btn btn-white rounded-pill px-4 fw-600 shadow-sm border bg-white">
+                <i class="bi bi-chevron-left"></i> Return to Portal
+            </a>
+            <button class="btn btn-vnit text-white rounded-pill px-4 fw-600 shadow-sm" style="background: var(--vnit-blue);" onclick="window.print()">
+                <i class="bi bi-printer-fill me-2"></i> Print Official Syllabus
+            </button>
+        </div>
+
+        <div class="detail-card">
+            <!-- Basic Meta Grid -->
+            <div class="row g-4 mb-5">
+                <div class="col-6 col-md-3">
+                    <div class="info-pill">
+                        <small class="text-uppercase text-muted fw-800 mb-2 d-block" style="font-size: 0.65rem; letter-spacing: 1px;">Scheme (L-T-P)</small>
+                        <div class="h4 fw-700 mb-0 text-primary">{{ basic[4] }} - {{ basic[5] }} - {{ basic[6] }}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="info-pill">
+                        <small class="text-uppercase text-muted fw-800 mb-2 d-block" style="font-size: 0.65rem; letter-spacing: 1px;">Academic Credits</small>
+                        <div class="h4 fw-700 mb-0 text-success">{{ basic[7] }} Credits</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="info-pill">
+                        <small class="text-uppercase text-muted fw-800 mb-2 d-block" style="font-size: 0.65rem; letter-spacing: 1px;">Registration Code</small>
+                        <div class="h4 fw-700 mb-0 text-danger">{{ course_code }}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="info-pill">
+                        <small class="text-uppercase text-muted fw-800 mb-2 d-block" style="font-size: 0.65rem; letter-spacing: 1px;">Prerequisites</small>
+                        <div class="fw-700 text-info">{% if prereqs %}{{ prereqs[0][0] }}{% else %}NONE{% endif %}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-5">
+                <div class="col-lg-7">
+                    <!-- Objectives -->
+                    <section class="mb-5">
+                        <h4 class="section-title">Course Objectives</h4>
+                        <ul class="list-group list-group-flush">
+                            {% for obj in objectives %}
+                            <li class="list-group-item px-0 py-3 bg-transparent border-bottom-0">
+                                <div class="d-flex gap-3">
+                                    <div class="text-primary fw-800">{{ loop.index }}.</div>
+                                    <div class="fw-500">{{ obj }}</div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+
+                    <!-- Outcomes -->
+                    <section class="mb-5">
+                        <h4 class="section-title">Course Outcomes</h4>
+                        <div class="row g-3">
+                            {% for out in outcomes %}
+                            <div class="col-12">
+                                <div class="p-3 bg-light rounded-4 border-start border-4 border-primary">
+                                    <div class="co-badge">CO{{ loop.index }}</div>
+                                    <p class="mb-0 fw-500">{{ out }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </section>
+                </div>
+
+                <div class="col-lg-5">
+                    <!-- Books & Materials -->
+                    <div class="sticky-top" style="top: 20px;">
+                        <div class="p-4 bg-white border rounded-4 shadow-sm mb-4">
+                            <h5 class="fw-bold mb-4 text-primary"><i class="bi bi-book-half me-2"></i>Recommended Reading</h5>
+                            
+                            <h6 class="text-uppercase text-muted fw-800 small mb-3">Text Books</h6>
+                            {% for book in text_books %}
+                            <div class="mb-3 p-3 bg-light rounded-3 small">
+                                <strong>{{ book[0] }}</strong> <br>
+                                <span class="text-primary fw-bold">{{ book[1] }}</span>
+                            </div>
+                            {% endfor %}
+
+                            <h6 class="text-uppercase text-muted fw-800 small mt-4 mb-3">Reference Books</h6>
+                            {% for book in ref_books %}
+                            <div class="mb-2 p-2 ps-3 border-start border-3 border-secondary small">
+                                {{ book[0] }}
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        {% if prereqs %}
+                        <div class="p-4 bg-primary text-white rounded-4 shadow-lg">
+                            <h6 class="fw-bold mb-2"><i class="bi bi-info-circle me-2"></i>Important Note</h6>
+                            <p class="small mb-0 opacity-90">Ensure you have completed {{ prereqs|length }} prerequisite course(s) before enrolling.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-5 opacity-10">
+
+            <!-- Detailed Syllabus Table -->
+            <section class="mb-5">
+                <h4 class="section-title">Detailed Syllabus Content</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Unit / Module Description</th>
+                                <th class="text-center" style="width: 120px;">Timeline</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for topic in description %}
+                            <tr>
+                                <td><span class="fw-600">{{ topic[0] }}</span></td>
+                                <td class="text-center"><span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3">{{ topic[1] }} Weeks</span></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Evaluation & Mapping Grid -->
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="h-100 p-4 bg-light rounded-4">
+                        <h5 class="fw-bold mb-4"><i class="bi bi-clipboard-data me-2"></i>Assessment Components</h5>
+                        {% for eval in evaluation %}
+                        <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-white rounded-3 shadow-sm">
+                            <div>
+                                <div class="fw-800 text-dark">{{ eval[0] }}</div>
+                                <div class="small text-muted">{{ eval[2] or 'N/A' }}</div>
+                            </div>
+                            <div class="h4 fw-800 text-primary mb-0">{{ eval[1] }}%</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="h-100 p-4 bg-light rounded-4 border">
+                        <h5 class="fw-bold mb-4"><i class="bi bi-diagram-3 me-2"></i>Target Program Outcomes</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-white bg-white">
+                                <thead>
+                                    <tr>
+                                        <th>PO Reference</th>
+                                        <th class="text-center">Correlation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for po in po_mapping %}
+                                    <tr>
+                                        <td class="small fw-600">{{ po[0] }}: {{ po[2][:45] }}...</td>
+                                        <td class="text-center"><span class="badge bg-dark rounded-pill">{{ po[1] }}</span></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="py-5 text-center text-muted">
+        <p class="small mb-0">Visvesvaraya National Institute of Technology | Nagpur, Maharashtra</p>
+        <p style="font-size: 0.65rem;">Official Academic Document</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

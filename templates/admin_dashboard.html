@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0">Admin Control Center</h2>
+            <p class="text-muted small">Manage the course registration portal</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/admin/settings" class="btn btn-outline-dark fw-bold px-4">
+                <i class="bi bi-gear-fill me-2"></i> Portal Settings
+            </a>
+            <a href="/" class="btn btn-danger fw-bold px-4">Logout</a>
+        </div>
+    </div>
+    <div class="row g-4 mt-2">
+        <div class="col-md-3">
+            <div class="card text-center p-3 shadow-sm border-0 bg-warning bg-opacity-10">
+                <i class="bi bi-person-plus-fill fs-1 text-warning"></i>
+                <h5 class="mt-2 fw-bold">Pending Approvals</h5>
+                <a href="/admin/pending_students" class="btn btn-sm btn-warning fw-bold">Approve Students</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3 shadow-sm">
+                <i class="bi bi-people fs-1 text-primary"></i>
+                <h5 class="mt-2">Students Master</h5>
+                <a href="/admin/view_students" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3 shadow-sm">
+                <i class="bi bi-journal-plus fs-1 text-success"></i>
+                <h5 class="mt-2">Courses</h5>
+                <a href="/admin/add_course" class="btn btn-sm btn-outline-success">Add New</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3 shadow-sm">
+                <i class="bi bi-clipboard-check fs-1 text-warning"></i>
+                <h5 class="mt-2">Registrations</h5>
+                <a href="{{ url_for('admin.student_registrations') }}" class="btn btn-sm btn-outline-warning">Approve</a>
+            </div>
+        </div>
+    </div>
+    <div class="row g-4 mt-1">
+        <div class="col-md-3">
+            <div class="card text-center p-3 shadow-sm border-0 bg-primary bg-opacity-10">
+                <i class="bi bi-people-fill fs-1 text-primary"></i>
+                <h5 class="mt-2 fw-bold">Faculty Master</h5>
+                <a href="/admin/manage_faculty" class="btn btn-sm btn-primary fw-bold">Manage Records</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3 shadow-sm border-0 bg-success bg-opacity-10">
+                <i class="bi bi-award fs-1 text-success"></i>
+                <h5 class="mt-2 fw-bold">Results & Audit</h5>
+                <a href="/admin/view_results" class="btn btn-sm btn-success fw-bold">Analyze Grades</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3 shadow-sm border-0 bg-info bg-opacity-10">
+                <i class="bi bi-clock-history fs-1 text-info"></i>
+                <h5 class="mt-2 fw-bold">Academic Session</h5>
+                <a href="/admin/settings" class="btn btn-sm btn-info fw-bold">Switch Session</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3 shadow-sm bg-warning bg-opacity-10 border-warning">
+                <i class="bi bi-graph-up-arrow fs-1 text-warning"></i>
+                <h5 class="mt-2 fw-bold">Live Analytics</h5>
+                <a href="/admin/analytics" class="btn btn-sm btn-warning fw-bold">View Insights</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Management Section -->
+    <div class="card shadow mt-5">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Course Master Management</h5>
+            <span class="badge bg-primary px-3 rounded-pill" id="course-count">Loading...</span>
+        </div>
+        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+            <table class="table table-hover mb-0">
+                <thead class="bg-light sticky-top">
+                    <tr>
+                        <th>Code</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Credits</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="course-list-body">
+                    <tr><td colspan="5" class="text-center">Initializing...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function fetchCourses() {
+            try {
+                const res = await fetch('/course/all');
+                const courses = await res.json();
+                document.getElementById('course-count').innerText = `${courses.length} Instances`;
+                
+                const container = document.getElementById('course-list-body').parentElement.parentElement;
+                container.innerHTML = ''; // Clear original table-responsive
+
+                // Grouping logic
+                const groups = {};
+                courses.forEach(c => {
+                    if(!groups[c.session]) groups[c.session] = [];
+                    groups[c.session].push(c);
+                });
+
+                // Sort session keys (Year 4 -> Year 1)
+                const sortedSessions = Object.keys(groups).sort((a,b) => b.localeCompare(a));
+
+                sortedSessions.forEach(sessionName => {
+                    const section = document.createElement('div');
+                    section.className = 'mb-5';
+                    section.innerHTML = `
+                        <h4 class="px-3 py-2 bg-secondary text-white rounded-t-lg mb-0 d-flex justify-content-between">
+                            <span><i class="bi bi-calendar-event me-2"></i> ${sessionName}</span>
+                            <span class="badge bg-light text-dark">${groups[sessionName].length} Courses</span>
+                        </h4>
+                        <div class="table-responsive shadow-sm border border-top-0 mb-4 rounded-b-lg">
+                            <table class="table table-hover mb-0 bg-white">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th style="width: 15%">Code</th>
+                                        <th style="width: 50%">Title</th>
+                                        <th style="width: 15%">Type</th>
+                                        <th style="width: 10%">Credits</th>
+                                        <th style="width: 10%" class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${groups[sessionName].map(c => `
+                                        <tr>
+                                            <td><strong>${c.course_code}</strong></td>
+                                            <td>${c.course_title}</td>
+                                            <td><span class="badge ${c.course_type === 'DC' ? 'bg-primary' : 'bg-info'}">${c.course_type}</span></td>
+                                            <td>${c.credits}</td>
+                                            <td class="text-end">
+                                                <a href="/admin/edit_course/${c.course_id}" class="btn btn-sm btn-outline-dark">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                    container.appendChild(section);
+                });
+
+            } catch (e) { console.error(e); }
+        }
+        fetchCourses();
+    </script>
+
+    <style>
+        .btn-vnit { background: #003366; color: white; border-radius: 8px; }
+        .btn-vnit:hover { background: #002244; color: white; }
+    </style>
+</body>
+</html>

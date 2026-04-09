@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Registration | VNIT Nagpur</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --vnit-blue: #003366;
+            --vnit-gold: #ffcc00;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --gradient: linear-gradient(135deg, #001f3f 0%, #003366 100%);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #f0f2f5;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(0, 51, 102, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 204, 0, 0.05) 0px, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--vnit-blue);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .main-container {
+            padding: 40px 0;
+        }
+
+        /* Glassmorphism Header */
+        .page-header {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            border-left: 8px solid var(--vnit-gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 204, 0, 0.1);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-APPROVED { background: #d1fae5; color: #065f46; border: 1px solid #34d399; }
+        .status-SUBMITTED { background: #e0f2fe; color: #075985; border: 1px solid #38bdf8; }
+        .status-PENDING, .status-NOT_STARTED { background: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
+
+        /* Course Cards */
+        .course-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 1.5rem;
+            height: 100%;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-color: var(--vnit-gold);
+        }
+
+        .course-card.selected {
+            border: 2px solid var(--vnit-blue);
+            background: #f0f7ff;
+        }
+
+        .course-card .course-code {
+            color: var(--vnit-blue);
+            font-weight: 800;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .course-card .course-title {
+            font-weight: 400;
+            color: #4b5563;
+            margin-bottom: 1rem;
+            min-height: 3rem;
+            line-height: 1.4;
+        }
+
+        .course-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .selection-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: var(--vnit-blue);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.2s ease;
+        }
+
+        .selected .selection-indicator {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Fixed Tracker Bar */
+        .tracker-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            z-index: 1000;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .btn-vnit {
+            background: var(--vnit-blue);
+            color: white;
+            border-radius: 12px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-vnit:hover {
+            background: #002244;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-pdf {
+            background: #dc3545;
+            color: white;
+            border-radius: 12px;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-weight: 800;
+            color: var(--vnit-blue);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .credits-tag {
+            background: #f3f4f6;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark">
+    <div class="container d-flex justify-content-between">
+        <a class="navbar-brand d-flex align-items-center" href="/student/dashboard">
+            <i class="bi bi-mortarboard-fill me-2"></i>
+            VNIT Course Portal
+        </a>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-white-50 small">Academic Session: {{ current_session }}</span>
+            <a href="/student/dashboard" class="btn btn-sm btn-outline-light">Back to Home</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container main-container">
+    <div class="page-header animate-fade">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="fw-bold mb-2">Student Course Registration</h1>
+                <p class="text-muted mb-0">Select your Departmental Core (DC) and Elective (DE) courses for this session.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                <div class="status-badge status-{{ reg_status }}">
+                    <i class="bi bi-info-circle-fill"></i>
+                    Status: {{ reg_status | replace('_', ' ') }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show border-0 shadow-sm animate-fade" role="alert" style="border-radius: 12px;">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form id="regForm" method="POST">
+        <input type="hidden" name="action" id="formAction" value="submit">
+        <!-- MANDATORY DC SECTION -->
+        <div class="section-container animate-fade" style="animation-delay: 0.1s;">
+            <h3 class="section-title">
+                <i class="bi bi-check-circle-fill text-success"></i>
+                Departmental Core (DC)
+                <span class="badge bg-secondary fs-6 rounded-pill">Mandatory</span>
+            </h3>
+            
+            <div class="row g-4">
+                <!-- Backlogs first -->
+                {% for course in backlogs %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="course-card selected border-danger" style="cursor: default;">
+                        <input type="checkbox" name="dc_selected" value="{{ course[0] }}" class="d-none" checked>
+                        <span class="course-code">{{ course[0] }}</span>
+                        <div class="course-title">{{ course[1] }}</div>
+                        <div class="course-meta flex-column gap-1">
+                            <div class="d-flex justify-content-between w-100">
+                                <span class="credits-tag text-danger">{{ course[2] }} Credits</span>
+                                <a href="/student/course_details/{{ course[0] }}" class="btn btn-sm btn-link p-0 no-select">View Details</a>
+                            </div>
+                            <div class="small text-danger fw-bold mt-2">
+                                <i class="bi bi-exclamation-triangle"></i> Mandatory Backlog
+                            </div>
+                        </div>
+                        <i class="bi bi-check-lg selection-indicator text-danger"></i>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <!-- Currect DC -->
+                {% for course in dc_courses %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="course-card selected" style="cursor: default;">
+                        <input type="checkbox" name="dc_selected" value="{{ course[0] }}" class="d-none" checked>
+                        <span class="course-code">{{ course[0] }}</span>
+                        <div class="course-title">{{ course[1] }}</div>
+                        <div class="course-meta flex-column gap-1">
+                            <div class="d-flex justify-content-between w-100">
+                                <span class="credits-tag">{{ course[2] }} Credits</span>
+                                <a href="/student/course_details/{{ course[0] }}" class="btn btn-sm btn-link p-0 no-select">View Details</a>
+                            </div>
+                            <div class="small text-muted mt-2">
+                                <i class="bi bi-person-circle"></i> {{ course[3] }}<br>
+                                <i class="bi bi-hash"></i> Section: {{ course[4] }} | Slot: {{ course[5] }}
+                            </div>
+                        </div>
+                        <i class="bi bi-check-lg selection-indicator"></i>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="my-5"></div>
+
+        <!-- DE SECTION -->
+        <div class="section-container animate-fade" style="animation-delay: 0.3s;">
+            <h3 class="section-title">
+                <i class="bi bi-stars text-warning"></i>
+                Departmental Electives (DE)
+                <span class="badge bg-primary fs-6 rounded-pill">Pick 2 Only</span>
+            </h3>
+            
+            <div class="row g-4">
+                {% for course in de_courses %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="course-card" onclick="toggleSelection(this, 'de')">
+                        <input type="checkbox" name="de_selected" value="{{ course[0] }}" class="d-none">
+                        <span class="course-code">{{ course[0] }}</span>
+                        <div class="course-title">{{ course[1] }}</div>
+                        <div class="course-meta flex-column gap-1">
+                            <div class="d-flex justify-content-between w-100">
+                                <span class="credits-tag">{{ course[2] }} Credits</span>
+                                <a href="/student/course_details/{{ course[0] }}" class="btn btn-sm btn-link p-0 no-select" onclick="event.stopPropagation()">View Details</a>
+                            </div>
+                            <div class="small text-muted mt-2">
+                                <i class="bi bi-person-circle"></i> {{ course[3] }}<br>
+                                <i class="bi bi-hash"></i> Section: {{ course[4] }} | Slot: {{ course[5] }}
+                            </div>
+                        </div>
+                        <i class="bi bi-check-lg selection-indicator"></i>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-12">
+                    <div class="p-5 text-center bg-white rounded-4 border">
+                        <i class="bi bi-search fs-1 text-muted"></i>
+                        <p class="mt-3 text-muted">No electives found for this session.</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <input type="hidden" name="action" id="formAction" value="submit">
+
+        <!-- TRACKER BAR (Moved inside form) -->
+        <div class="tracker-bar animate-fade">
+            <div class="container d-flex justify-content-between align-items-center">
+                <div class="d-none d-md-block">
+                    <span class="fw-bold text-muted">Selection Progress:</span>
+                    <span class="ms-3 badge bg-light text-dark shadow-sm p-2 px-3 border">
+                        DC: <span id="dcCount">0</span> Selected
+                    </span>
+                    <span class="ms-2 badge bg-light text-dark shadow-sm p-2 px-3 border">
+                        DE: <span id="deCount">0</span> / 2 Selected
+                    </span>
+                </div>
+                <div class="d-flex gap-3">
+                    {% if reg_status == 'APPROVED' %}
+                        <button type="submit" class="btn btn-pdf d-flex align-items-center gap-2" onclick="triggerAction('generate_pdf')">
+                            <i class="bi bi-file-earmark-pdf-fill"></i>
+                            Download Final Registration PDF
+                        </button>
+                    {% elif reg_status == 'SUBMITTED' %}
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge bg-info-subtle text-info border border-info p-3 px-4 rounded-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-clock-history"></i>
+                                Submitted: Awaiting Admin Approval
+                            </span>
+                            <button type="submit" class="btn btn-outline-primary" onclick="triggerAction('submit')">
+                                Update Selection
+                            </button>
+                        </div>
+                    {% else %}
+                        <button type="submit" class="btn btn-vnit d-flex align-items-center gap-2" id="submitBtn" style="display: none;" onclick="triggerAction('submit')">
+                            <i class="bi bi-send-fill"></i>
+                            Finalize & Submit Registration
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </form>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleSelection(card, type) {
+        const checkbox = card.querySelector('input');
+        const isApproved = "{{ reg_status }}" === "APPROVED";
+        
+        if(isApproved) {
+            alert("Registration is approved and cannot be modified.");
+            return;
+        }
+
+        // DE Selection limit check
+        const deChecked = document.querySelectorAll('input[name="de_selected"]:checked');
+        if(!checkbox.checked && type === 'de' && deChecked.length >= 2) {
+            alert("You can only select exactly 2 DE courses.");
+            return;
+        }
+
+        checkbox.checked = !checkbox.checked;
+        
+        if(checkbox.checked) {
+            card.classList.add('selected');
+        } else {
+            card.classList.remove('selected');
+        }
+
+        updateTracker();
+    }
+
+    function updateTracker() {
+        const dcChecked = document.querySelectorAll('input[name="dc_selected"]:checked').length;
+        const deChecked = document.querySelectorAll('input[name="de_selected"]:checked').length;
+        
+        document.getElementById('dcCount').innerText = dcChecked;
+        document.getElementById('deCount').innerText = deChecked;
+
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            // Requirement: mandatorily 3 DC (or more if backlogs) and exactly 2 DE
+            if (dcChecked >= 3 && deChecked === 2) {
+                submitBtn.style.setProperty('display', 'flex', 'important');
+            } else {
+                submitBtn.style.setProperty('display', 'none', 'important');
+            }
+        }
+    }
+
+    function triggerAction(action) {
+        document.getElementById('formAction').value = action;
+        if(action === 'generate_pdf' || action === 'submit') {
+            // When submitting, we perform a check and generate PDF implicitly or redirect
+            // The user said: "generate pdf of registration and that should go to the admin login to approve"
+            // So we'll submit the form normally.
+            document.getElementById('regForm').submit();
+        }
+    }
+
+    window.onload = updateTracker;
+</script>
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard | VNIT Course Portal</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--background);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            margin-bottom: 2rem;
+        }
+
+        .welcome-header {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-sub {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .stat-icon {
+            float: right;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+
+        .section-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .table-container {
+            padding: 0;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            background-color: #f1f5f9;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table td {
+            padding: 1rem 1.5rem;
+            vertical-align: middle;
+            font-size: 0.9375rem;
+            color: rgba(30, 41, 59, 0.8);
+        }
+
+        .badge-session {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary-soft {
+            background-color: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            border: none;
+        }
+
+        .btn-primary-soft:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-success-soft {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: none;
+        }
+
+        .btn-success-soft:hover {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .nav-tabs {
+            border-bottom: none;
+            gap: 1rem;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i data-lucide="graduation-cap"></i>
+            VNIT PORTAL
+        </a>
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <span class="d-none d-md-block text-muted">Academic Session: 2025-26</span>
+            <div class="dropdown">
+                <button class="btn dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+                    <div class="avatar">{{ faculty_name[0] }}</div>
+                    <span>{{ faculty_name }}</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item text-danger d-flex align-items-center gap-2" href="{{ url_for('auth.logout') }}"><i data-lucide="log-out" size="18"></i> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category if category != 'danger' else 'danger' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="welcome-section">
+        <h1 class="welcome-header">Faculty Dashboard</h1>
+        <p class="welcome-sub">Manage your courses, track attendance, and advise your students.</p>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="book-open"></i></div>
+            <div class="stat-title">Active Courses</div>
+            <div class="stat-value">{{ courses|length }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="users"></i></div>
+            <div class="stat-title">Total Students</div>
+            <div class="stat-value">
+                {% set total_students = namespace(count=0) %}
+                {% for c in courses %}{% set total_students.count = total_students.count + c[8] %}{% endfor %}
+                {{ total_students.count }}
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="user-check"></i></div>
+            <div class="stat-title">Advisees</div>
+            <div class="stat-value">{{ coordinated_students|length }}</div>
+        </div>
+    </div>
+
+    <!-- tabs for toggle between my courses and my advisees -->
+    <ul class="nav nav-tabs mb-4" id="dashboardTabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses-content" type="button">
+                Assigned Courses
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="advisees-tab" data-bs-toggle="tab" data-bs-target="#advisees-content" type="button">
+                My Advisees
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="dashboardTabsContent">
+        <!-- My Courses Tab -->
+        <div class="tab-pane fade show active" id="courses-content" role="tabpanel">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title"><i data-lucide="layout"></i> Course Load</h2>
+                </div>
+                <div class="table-responsive table-container">
+                    {% if courses %}
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Course Details</th>
+                                <th>Schedule</th>
+                                <th>Enrollment</th>
+                                <th>Attendance</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold">{{ course[1] }}</div>
+                                    <div class="small text-muted">{{ course[2] }}</div>
+                                    <span class="badge-session">{{ course[4] }}</span>
+                                </td>
+                                <td>
+                                    <div class="small">Sem {{ course[3] }} | {{ course[5] or 'N/A' }}{{ course[6] or '' }}</div>
+                                    <div class="small text-muted">Slot: {{ course[7] or 'TBD' }}</div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i data-lucide="users" size="16"></i>
+                                        <span>{{ course[8] }} Students</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if course[9] %}
+                                    <div class="progress" style="height: 6px; width: 100px; margin-bottom: 4px;">
+                                        <div class="progress-bar bg-{{ 'success' if course[9] >= 75 else 'warning' }}" role="progressbar" style="width: {{ course[9] }}%"></div>
+                                    </div>
+                                    <span class="small fw-semibold">{{ "%.1f"|format(course[9]) }}%</span>
+                                    {% else %}
+                                    <span class="text-muted small">No data</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ url_for('faculty.attendance', course_id=course[0]) }}" class="btn-action btn-primary-soft">
+                                            <i data-lucide="check-square" size="16"></i> Attendance
+                                        </a>
+                                        <a href="{{ url_for('faculty.grading', instance_id=course[0]) }}" class="btn-action btn-success-soft">
+                                            <i data-lucide="award" size="16"></i> Grades
+                                        </a>
+                                        <a href="{{ url_for('faculty.manage_syllabus', course_id=course[10]) }}" class="btn-action btn-primary-soft" style="background-color: rgba(99, 102, 241, 0.1); color: #6366f1;">
+                                            <i data-lucide="book" size="16"></i> Syllabus
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state">
+                        <i data-lucide="book-x" size="48"></i>
+                        <p>No courses assigned to you this session.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Advisees Tab -->
+        <div class="tab-pane fade" id="advisees-content" role="tabpanel">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title"><i data-lucide="users"></i> Student Coordination</h2>
+                </div>
+                <div class="table-responsive table-container">
+                    {% if coordinated_students %}
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Enrollment No</th>
+                                <th>Program & Semester</th>
+                                <th>Contact</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in coordinated_students %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold">{{ student[1] }}</div>
+                                    <div class="small text-muted">ID: {{ student[0] }}</div>
+                                </td>
+                                <td><code class="text-primary">{{ student[2] }}</code></td>
+                                <td>
+                                    <span class="small">{{ student[3] }}</span><br>
+                                    <span class="badge bg-light text-dark">Semester {{ student[4] }}</span>
+                                </td>
+                                <td>
+                                    <div class="small"><i data-lucide="mail" size="12"></i> {{ student[5] }}</div>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('faculty.student_details', student_id=student[0]) }}" class="btn-action btn-primary-soft">
+                                        <i data-lucide="external-link" size="16"></i> View Details
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="empty-state">
+                        <i data-lucide="user-minus" size="48"></i>
+                        <p>You have no assigned students to coordinate.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    lucide.createIcons();
+    // Persistence of tabs could be added here
+</script>
+</body>
+</html>
