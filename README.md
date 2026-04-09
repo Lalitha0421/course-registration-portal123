@@ -43,8 +43,9 @@ The system is built on a robust Oracle schema featuring:
 ### Prerequisites
 - Python 3.8+
 - Oracle Database Express Edition (XE)
+- **Optional:** Docker & Docker Compose
 
-### Installation
+### Option 1: Manual Installation
 1. Clone the repository:
    ```bash
    git clone https://github.com/Lalitha0421/course-registration-portal123.git
@@ -62,22 +63,23 @@ The system is built on a robust Oracle schema featuring:
    pip install -r requirements.txt
    ```
 
-4. Configure environment variables:
-   Create a `.env` file in the root directory:
-   ```env
-   DB_USER=your_db_user
-   DB_PASSWORD=your_db_password
-   DB_DSN=localhost:1521/XE
-   FLASK_SECRET=your_secret_key
-   ```
+4. Configure environment variables in `.env`.
 
-5. Initialize the database:
-   Run the scripts in the `/sql` directory to set up the schema and sample data.
-
-6. Launch the application:
+5. Launch the application:
    ```bash
    python app.py
    ```
+
+### Option 2: Docker Deployment (Recommended)
+This is the easiest way to launch the portal along with a pre-configured Oracle XE database.
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+2. Run the deployment command:
+   ```bash
+   docker-compose up --build -d
+   ```
+3. The app will be available at `http://localhost:5000`. 
+   The database will automatically initialize using scripts in `/sql`.
 
 ---
 *Built with ❤️ for VNIT Nagpur.*
