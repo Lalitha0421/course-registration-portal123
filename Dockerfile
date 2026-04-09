@@ -30,8 +30,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 5000
+# Expose the port (Hugging Face standard)
+EXPOSE 7860
 
 # Run the application
 CMD ["python", "app.py"]
