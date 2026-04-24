@@ -62,17 +62,17 @@
 <header>
   <div>
     <h1>🎓 VNIT Course Registration Portal <span class="badge">ER Diagram</span></h1>
-    <p>Oracle XE Database · 21 Tables · Full Schema · April 2026</p>
+    <p>Oracle XE Database · 21 Core Tables · Active Project Schema · April 2026</p>
   </div>
 </header>
 
 <div class="section-title">📊 Database at a Glance</div>
 <div class="summary">
   <div class="card"><div class="num">21</div><div class="lbl">Total Tables</div></div>
-  <div class="card"><div class="num">3</div><div class="lbl">User Roles</div></div>
-  <div class="card"><div class="num">10</div><div class="lbl">Course & Syllabus</div></div>
-  <div class="card"><div class="num">2</div><div class="lbl">Registrations</div></div>
-  <div class="card"><div class="num">3</div><div class="lbl">OBE (NBA/NAAC)</div></div>
+  <div class="card"><div class="num">4</div><div class="lbl">User Roles</div></div>
+  <div class="card"><div class="num">15</div><div class="lbl">Course & Syllabus</div></div>
+  <div class="card"><div class="num">4</div><div class="lbl">Registrations</div></div>
+  <div class="card"><div class="num">5</div><div class="lbl">OBE (NBA/NAAC)</div></div>
   <div class="card"><div class="num">2</div><div class="lbl">Performance</div></div>
 </div>
 
@@ -102,368 +102,594 @@
 </div>
 
 <div id="table-view" style="display:none">
+  <div id="dynamic-table-cards">
 <div class="tables-grid">
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#1d4ed8">⚙️ SYSTEM_CONFIG</div>
+    <div class="tbl-header" style="background:#7c1d1d">ATTENDANCE</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>config_key</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">config_value</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">updated_at</span><span class="col-type">DATE</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>ATTENDANCE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to STUDENTS">FK</span>STUDENT_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_INSTANCE">FK</span>COURSE_INSTANCE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">ATTENDANCE_PERCENTAGE</span><span class="col-type">NUMBER</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#1d4ed8">🔑 USERS</div>
+    <div class="tbl-header" style="background:#059669">COORDINATOR</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>user_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">UK</span>login_id</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">role</span><span class="col-type">student|faculty|admin</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>student_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>faculty_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">FACULTY_ID</span><span class="col-type">NUMBER</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#065f46">👨‍🏫 FACULTY</div>
+    <div class="tbl-header" style="background:#1e3a5f">COURSE_DESCRIPTION</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>faculty_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">faculty_name</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">email</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">department</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>DESC_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">TOPIC</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">DURATION_WEEKS</span><span class="col-type">NUMBER</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#065f46">👨‍🎓 STUDENTS</div>
+    <div class="tbl-header" style="background:#1e3a5f">COURSE_INSTANCE</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>student_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">UK</span>enrollment_no</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">name</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">semester</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">program</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">advisor_id</span><span class="col-type">FK → FACULTY</span></div>
-      <div class="col-row"><span class="col-name">status</span><span class="col-type">PENDING|APR|REJ</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>INSTANCE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to FACULTY">FK</span>FACULTY_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">ACADEMIC_SESSION</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">SEMESTER</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">SECTION</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">BATCH</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">SLOT</span><span class="col-type">VARCHAR2</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#1e3a5f">📖 COURSE_MASTER</div>
+    <div class="tbl-header" style="background:#1e3a5f">COURSE_MASTER</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>course_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">UK</span>course_code</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">course_title</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">course_type</span><span class="col-type">DC | DE</span></div>
-      <div class="col-row"><span class="col-name">credits</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">COURSE_CODE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">COURSE_TITLE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">COURSE_TYPE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">PROGRAM</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">L</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">T</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">P</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">CREDITS</span><span class="col-type">NUMBER</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#1e3a5f">📅 COURSE_INSTANCE</div>
+    <div class="tbl-header" style="background:#1e3a5f">COURSE_OBJECTIVES</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>instance_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>faculty_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">academic_session</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">section</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>OBJ_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">DESCRIPTION</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">PRINT_SEQ</span><span class="col-type">NUMBER</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#92400e">📝 STUDENT_REGISTRATION</div>
+    <div class="tbl-header" style="background:#1e3a5f">COURSE_OUTCOMES</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>reg_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>student_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">semester</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">status</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>OUTCOME_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">OUTCOME_DESC</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">PRINT_SEQ</span><span class="col-type">NUMBER</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#92400e">📋 STUDENT_REGISTRATION_COURSES</div>
+    <div class="tbl-header" style="background:#1e3a5f">COURSE_PREREQUISITES</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>reg_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_instance_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">course_type</span><span class="col-type">VARCHAR2(5)</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>PREREQUISITE_COURSE_ID</span><span class="col-type">NUMBER</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#7c1d1d">📊 RESULTS</div>
+    <div class="tbl-header" style="background:#7c3aed">CO_PO_MAPPING</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>result_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>student_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">grade_letter</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>MAPPING_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_OUTCOMES">FK</span>COURSE_OUTCOME_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to PROGRAM_OUTCOMES">FK</span>PROGRAM_OUTCOME_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">WEIGHTAGE</span><span class="col-type">NUMBER</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#7c1d1d">📅 ATTENDANCE</div>
+    <div class="tbl-header" style="background:#1e3a5f">EVALUATION_DETAILS</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>attendance_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>student_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">attendance_percentage</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>EVAL_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">EVAL_TYPE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">WEIGHTAGE</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">DESCRIPTION</span><span class="col-type">VARCHAR2</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#4c1d95">🎯 COURSE_OUTCOMES</div>
+    <div class="tbl-header" style="background:#059669">FACULTY</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>outcome_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">outcome_desc</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>FACULTY_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to USERS">FK</span>USER_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">FACULTY_NAME</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">EMAIL</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">DEPARTMENT</span><span class="col-type">VARCHAR2</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#4c1d95">🏆 PROGRAM_OUTCOMES</div>
+    <div class="tbl-header" style="background:#7c3aed">PROGRAM_OUTCOMES</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>po_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">UK</span>po_code</span><span class="col-type">PO1, PO2...</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>PO_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">PO_CODE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">PO_DESCRIPTION</span><span class="col-type">CLOB</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#4c1d95">🔗 CO_PO_MAPPING</div>
-  <div class="tbl-card">
-    <div class="tbl-header" style="background:#4c1d95">🔗 CO_PO_MAPPING</div>
+    <div class="tbl-header" style="background:#1e3a5f">REFERENCE_BOOKS</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_outcome_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>program_outcome_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">weightage</span><span class="col-type">NUMBER(0-3)</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>REF_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">TITLE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">TYPE</span><span class="col-type">VARCHAR2</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#1e3a5f">📌 EVALUATION_DETAILS</div>
+    <div class="tbl-header" style="background:#7c1d1d">RESULTS</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>eval_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">component_name</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">weightage_percent</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>RESULT_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to STUDENTS">FK</span>STUDENT_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">GRADE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">ACADEMIC_SESSION</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">SEMESTER</span><span class="col-type">NUMBER</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#065f46">🔄 COORDINATOR</div>
+    <div class="tbl-header" style="background:#059669">STUDENTS</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>faculty_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>student_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>STUDENT_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">NAME</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">EMAIL</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">MOBILE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">PROGRAM</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">AADHAR</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">DOB</span><span class="col-type">DATE</span></div>
+      <div class="col-row"><span class="col-name">ADDRESS</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">STATUS</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">ENROLLMENT_NO</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">FACULTY_ADVISOR</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">IS_HOSTELLER</span><span class="col-type">CHAR</span></div>
+      <div class="col-row"><span class="col-name">REGISTRATION_DATE</span><span class="col-type">DATE</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to USERS">FK</span>USER_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to FACULTY">FK</span>ADVISOR_ID</span><span class="col-type">NUMBER</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#1e3a5f">🔄 COURSE_PREREQUISITES</div>
+    <div class="tbl-header" style="background:#92400e">STUDENT_REGISTRATION</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>prerequisite_course_id</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>REG_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to STUDENTS">FK</span>STUDENT_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">SEMESTER</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">ACADEMIC_SESSION</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">STATUS</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">REGISTRATION_DATE</span><span class="col-type">DATE</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#1e3a5f">🎯 COURSE_OBJECTIVES</div>
+    <div class="tbl-header" style="background:#92400e">STUDENT_REGISTRATION_COURSES</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>obj_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">description</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to STUDENT_REGISTRATION">FK</span>REG_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_INSTANCE">FK</span>COURSE_INSTANCE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">COURSE_TYPE</span><span class="col-type">VARCHAR2</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#1e3a5f">📝 COURSE_DESCRIPTION</div>
+    <div class="tbl-header" style="background:#0891b2">SYSTEM_CONFIG</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>desc_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">topic</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>CONFIG_KEY</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">CONFIG_VALUE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">UPDATED_AT</span><span class="col-type">DATE</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#1e3a5f">📚 TEXT_BOOKS</div>
+    <div class="tbl-header" style="background:#1e3a5f">TEXT_BOOKS</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>book_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">title</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">type</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>BOOK_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">TITLE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">TYPE</span><span class="col-type">VARCHAR2</span></div>
     </div>
   </div>
   <div class="tbl-card">
-    <div class="tbl-header" style="background:#1e3a5f">📚 REFERENCE_BOOKS</div>
+    <div class="tbl-header" style="background:#1d4ed8">USERS</div>
     <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>ref_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name">title</span><span class="col-type">VARCHAR2</span></div>
-      <div class="col-row"><span class="col-name">type</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>USER_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">LOGIN_ID</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">PASSWORD_HASH</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">ROLE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">CREATED_AT</span><span class="col-type">DATE</span></div>
+      <div class="col-row"><span class="col-name">STUDENT_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">FACULTY_ID</span><span class="col-type">NUMBER</span></div>
     </div>
   </div>
-  <div class="tbl-card">
-    <div class="tbl-header" style="background:#1e3a5f">🔄 COURSE_EQUIVALENTS</div>
-    <div class="tbl-body">
-      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>id</span><span class="col-type">NUMBER</span></div>
-      <div class="col-row"><span class="col-name"><span class="col-note">FK</span>course_id</span><span class="col-type">NUMBER</span></div>
-    </div>
-  </div>
+</div>
 </div>
 </div>
 
 <!-- TEXTUAL DIAGRAM DATA -->
 <script id="data-full" type="text/plain">
 erDiagram
-    SYSTEM_CONFIG {
-        string config_key PK
-        string config_value
-        date updated_at
-    }
-    USERS {
-        int user_id PK
-        string login_id
-        string password_hash
-        string role
-        int student_id FK
-        int faculty_id FK
-        date created_at
-    }
-    FACULTY {
-        int faculty_id PK
-        int user_id FK
-        string faculty_name
-        string email
-        string department
-    }
-    STUDENTS {
-        int student_id PK
-        int user_id FK
-        string enrollment_no
-        string name
-        string email
-        string mobile
-        int semester
-        string program
-        int advisor_id FK
-        string status
-        date registration_date
-    }
-    COURSE_MASTER {
-        int course_id PK
-        string course_code
-        string course_title
-        string course_type
-        string program
-        int L
-        int T
-        int P
-        int credits
-    }
-    COURSE_INSTANCE {
-        int instance_id PK
-        int course_id FK
-        int faculty_id FK
-        string academic_session
-        int semester
-        string section
-        string batch
-        string slot
-    }
-    STUDENT_REGISTRATION {
-        int reg_id PK
-        int student_id FK
-        int semester
-        string academic_session
-        string status
-        date registration_date
-    }
-    STUDENT_REGISTRATION_COURSES {
-        int id PK
-        int reg_id FK
-        int course_instance_id FK
-        string course_type
-    }
-    RESULTS {
-        int result_id PK
-        int student_id FK
-        int course_id FK
-        string academic_session
-        float grade
-        string grade_letter
-    }
     ATTENDANCE {
-        int attendance_id PK
-        int student_id FK
-        int course_instance_id FK
-        float attendance_percentage
-        date updated_date
-    }
-    COURSE_OUTCOMES {
-        int outcome_id PK
-        int course_id FK
-        string outcome_desc
-        int print_seq
-    }
-    PROGRAM_OUTCOMES {
-        int po_id PK
-        string po_code
-        string po_description
-    }
-    CO_PO_MAPPING {
-        int id PK
-        int course_outcome_id FK
-        int program_outcome_id FK
-        int weightage
-    }
-    COURSE_OBJECTIVES {
-        int obj_id PK
-        int course_id FK
-        string description
-        int print_seq
-    }
-    COURSE_DESCRIPTION {
-        int desc_id PK
-        int course_id FK
-        string topic
-        int duration_weeks
-    }
-    TEXT_BOOKS {
-        int book_id PK
-        int course_id FK
-        string title
-        string type
-    }
-    REFERENCE_BOOKS {
-        int ref_id PK
-        int course_id FK
-        string title
-        string type
-    }
-    EVALUATION_DETAILS {
-        int eval_id PK
-        int course_id FK
-        string component_name
-        float weightage_percent
-    }
-    COURSE_PREREQUISITES {
-        int id PK
-        int course_id FK
-        int prerequisite_course_id FK
-    }
-    COURSE_EQUIVALENTS {
-        int id PK
-        int course_id FK
-        int equivalent_course_id FK
+        int ATTENDANCE_ID PK
+        int STUDENT_ID FK
+        int COURSE_INSTANCE_ID FK
+        int ATTENDANCE_PERCENTAGE 
     }
     COORDINATOR {
-        int id PK
-        int faculty_id FK
-        int student_id FK
-        string academic_session
+        int ID PK
+        int COURSE_ID 
+        int FACULTY_ID 
     }
+    COURSE_DESCRIPTION {
+        int DESC_ID PK
+        int COURSE_ID 
+        string TOPIC 
+        int DURATION_WEEKS 
+    }
+    COURSE_INSTANCE {
+        int INSTANCE_ID PK
+        int COURSE_ID FK
+        int FACULTY_ID FK
+        string ACADEMIC_SESSION 
+        int SEMESTER 
+        string SECTION 
+        string BATCH 
+        string SLOT 
+    }
+    COURSE_MASTER {
+        int COURSE_ID PK
+        string COURSE_CODE 
+        string COURSE_TITLE 
+        string COURSE_TYPE 
+        string PROGRAM 
+        int L 
+        int T 
+        int P 
+        int CREDITS 
+    }
+    COURSE_OBJECTIVES {
+        int OBJ_ID PK
+        int COURSE_ID 
+        string DESCRIPTION 
+        int PRINT_SEQ 
+    }
+    COURSE_OUTCOMES {
+        int OUTCOME_ID PK
+        int COURSE_ID 
+        string OUTCOME_DESC 
+        int PRINT_SEQ 
+    }
+    COURSE_PREREQUISITES {
+        int ID PK
+        int COURSE_ID 
+        int PREREQUISITE_COURSE_ID 
+    }
+    CO_PO_MAPPING {
+        int MAPPING_ID PK
+        int COURSE_OUTCOME_ID FK
+        int PROGRAM_OUTCOME_ID FK
+        int WEIGHTAGE 
+    }
+    EVALUATION_DETAILS {
+        int EVAL_ID PK
+        int COURSE_ID 
+        string EVAL_TYPE 
+        int WEIGHTAGE 
+        string DESCRIPTION 
+    }
+    FACULTY {
+        int FACULTY_ID PK
+        int USER_ID FK
+        string FACULTY_NAME 
+        string EMAIL 
+        string DEPARTMENT 
+    }
+    PROGRAM_OUTCOMES {
+        int PO_ID PK
+        string PO_CODE 
+        clob PO_DESCRIPTION 
+    }
+    REFERENCE_BOOKS {
+        int REF_ID PK
+        int COURSE_ID 
+        string TITLE 
+        string TYPE 
+    }
+    RESULTS {
+        int RESULT_ID PK
+        int STUDENT_ID FK
+        int COURSE_ID FK
+        string GRADE 
+        string ACADEMIC_SESSION 
+        int SEMESTER 
+    }
+    STUDENTS {
+        int STUDENT_ID PK
+        string NAME 
+        string EMAIL 
+        string MOBILE 
+        string PROGRAM 
+        string AADHAR 
+        date DOB 
+        string ADDRESS 
+        string STATUS 
+        string ENROLLMENT_NO 
+        string FACULTY_ADVISOR 
+        char IS_HOSTELLER 
+        date REGISTRATION_DATE 
+        int USER_ID FK
+        int ADVISOR_ID FK
+    }
+    STUDENT_REGISTRATION {
+        int REG_ID PK
+        int STUDENT_ID FK
+        int SEMESTER 
+        string ACADEMIC_SESSION 
+        string STATUS 
+        date REGISTRATION_DATE 
+    }
+    STUDENT_REGISTRATION_COURSES {
+        int ID PK
+        int REG_ID FK
+        int COURSE_INSTANCE_ID FK
+        string COURSE_TYPE 
+    }
+    SYSTEM_CONFIG {
+        string CONFIG_KEY PK
+        string CONFIG_VALUE 
+        date UPDATED_AT 
+    }
+    TEXT_BOOKS {
+        int BOOK_ID PK
+        int COURSE_ID 
+        string TITLE 
+        string TYPE 
+    }
+    USERS {
+        int USER_ID PK
+        string LOGIN_ID 
+        string PASSWORD_HASH 
+        string ROLE 
+        date CREATED_AT 
+        int STUDENT_ID 
+        int FACULTY_ID 
+    }
+    USERS ||--o{ STUDENTS : "USER_ID"
+    FACULTY ||--o{ STUDENTS : "ADVISOR_ID"
+    STUDENTS ||--o{ STUDENT_REGISTRATION : "STUDENT_ID"
+    STUDENTS ||--o{ RESULTS : "STUDENT_ID"
+    STUDENTS ||--o{ ATTENDANCE : "STUDENT_ID"
+    COURSE_MASTER ||--o{ RESULTS : "COURSE_ID"
+    COURSE_MASTER ||--o{ COURSE_INSTANCE : "COURSE_ID"
+    FACULTY ||--o{ COURSE_INSTANCE : "FACULTY_ID"
+    STUDENT_REGISTRATION ||--o{ STUDENT_REGISTRATION_COURSES : "REG_ID"
+    COURSE_INSTANCE ||--o{ STUDENT_REGISTRATION_COURSES : "COURSE_INSTANCE_ID"
+    COURSE_MASTER ||--o{ COURSE_DESCRIPTION : "COURSE_ID"
+    COURSE_MASTER ||--o{ COURSE_OBJECTIVES : "COURSE_ID"
+    COURSE_MASTER ||--o{ COURSE_OUTCOMES : "COURSE_ID"
+    COURSE_MASTER ||--o{ TEXT_BOOKS : "COURSE_ID"
+    COURSE_MASTER ||--o{ REFERENCE_BOOKS : "COURSE_ID"
+    COURSE_MASTER ||--o{ COURSE_PREREQUISITES : "COURSE_ID"
+    COURSE_MASTER ||--o{ COURSE_PREREQUISITES : "PREREQUISITE_COURSE_ID"
+    COURSE_OUTCOMES ||--o{ CO_PO_MAPPING : "COURSE_OUTCOME_ID"
+    PROGRAM_OUTCOMES ||--o{ CO_PO_MAPPING : "PROGRAM_OUTCOME_ID"
+    USERS ||--o{ FACULTY : "USER_ID"
+    COURSE_MASTER ||--o{ EVALUATION_DETAILS : "COURSE_ID"
+</script>
 
-    USERS ||--o| STUDENTS : "profile"
-    USERS ||--o| FACULTY : "profile"
-    FACULTY ||--o{ STUDENTS : "advises"
-    COURSE_MASTER ||--o{ COURSE_INSTANCE : "instance"
-    FACULTY ||--o{ COURSE_INSTANCE : "teaches"
-    STUDENTS ||--o{ STUDENT_REGISTRATION : "header"
-    STUDENT_REGISTRATION ||--o{ STUDENT_REGISTRATION_COURSES : "lines"
-    COURSE_INSTANCE ||--o{ STUDENT_REGISTRATION_COURSES : "offering"
-    STUDENTS ||--o{ RESULTS : "has"
-    COURSE_MASTER ||--o{ RESULTS : "for_course"
-    STUDENTS ||--o{ ATTENDANCE : "tracked"
-    COURSE_INSTANCE ||--o{ ATTENDANCE : "for_instance"
-    COURSE_MASTER ||--o{ COURSE_OUTCOMES : "outcomes"
-    COURSE_MASTER ||--o{ COURSE_OBJECTIVES : "objectives"
-    COURSE_MASTER ||--o{ COURSE_DESCRIPTION : "syllabus"
-    COURSE_MASTER ||--o{ TEXT_BOOKS : "textbooks"
-    COURSE_MASTER ||--o{ REFERENCE_BOOKS : "references"
-    COURSE_MASTER ||--o{ EVALUATION_DETAILS : "evaluation"
-    COURSE_MASTER ||--o{ COURSE_PREREQUISITES : "prereqs"
-    COURSE_MASTER ||--o{ COURSE_EQUIVALENTS : "equivalents"
-    COURSE_OUTCOMES ||--o{ CO_PO_MAPPING : "maps_to"
-    PROGRAM_OUTCOMES ||--o{ CO_PO_MAPPING : "mapped_from"
-    FACULTY ||--o{ COORDINATOR : "assigned_adv"
-    STUDENTS ||--o{ COORDINATOR : "assigned_stud"
+<script id="data-table-cards" type="text/plain">
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#7c1d1d">ATTENDANCE</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>ATTENDANCE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to STUDENTS">FK</span>STUDENT_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_INSTANCE">FK</span>COURSE_INSTANCE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">ATTENDANCE_PERCENTAGE</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#059669">COORDINATOR</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">FACULTY_ID</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">COURSE_DESCRIPTION</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>DESC_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">TOPIC</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">DURATION_WEEKS</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">COURSE_INSTANCE</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>INSTANCE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to FACULTY">FK</span>FACULTY_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">ACADEMIC_SESSION</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">SEMESTER</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">SECTION</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">BATCH</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">SLOT</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">COURSE_MASTER</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">COURSE_CODE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">COURSE_TITLE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">COURSE_TYPE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">PROGRAM</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">L</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">T</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">P</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">CREDITS</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">COURSE_OBJECTIVES</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>OBJ_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">DESCRIPTION</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">PRINT_SEQ</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">COURSE_OUTCOMES</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>OUTCOME_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">OUTCOME_DESC</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">PRINT_SEQ</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">COURSE_PREREQUISITES</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>PREREQUISITE_COURSE_ID</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#7c3aed">CO_PO_MAPPING</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>MAPPING_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_OUTCOMES">FK</span>COURSE_OUTCOME_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to PROGRAM_OUTCOMES">FK</span>PROGRAM_OUTCOME_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">WEIGHTAGE</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">EVALUATION_DETAILS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>EVAL_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">EVAL_TYPE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">WEIGHTAGE</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">DESCRIPTION</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#059669">FACULTY</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>FACULTY_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to USERS">FK</span>USER_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">FACULTY_NAME</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">EMAIL</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">DEPARTMENT</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#7c3aed">PROGRAM_OUTCOMES</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>PO_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">PO_CODE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">PO_DESCRIPTION</span><span class="col-type">CLOB</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">REFERENCE_BOOKS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>REF_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">TITLE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">TYPE</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#7c1d1d">RESULTS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>RESULT_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to STUDENTS">FK</span>STUDENT_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">GRADE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">ACADEMIC_SESSION</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">SEMESTER</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#059669">STUDENTS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>STUDENT_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">NAME</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">EMAIL</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">MOBILE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">PROGRAM</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">AADHAR</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">DOB</span><span class="col-type">DATE</span></div>
+      <div class="col-row"><span class="col-name">ADDRESS</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">STATUS</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">ENROLLMENT_NO</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">FACULTY_ADVISOR</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">IS_HOSTELLER</span><span class="col-type">CHAR</span></div>
+      <div class="col-row"><span class="col-name">REGISTRATION_DATE</span><span class="col-type">DATE</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to USERS">FK</span>USER_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to FACULTY">FK</span>ADVISOR_ID</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#92400e">STUDENT_REGISTRATION</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>REG_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to STUDENTS">FK</span>STUDENT_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">SEMESTER</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">ACADEMIC_SESSION</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">STATUS</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">REGISTRATION_DATE</span><span class="col-type">DATE</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#92400e">STUDENT_REGISTRATION_COURSES</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to STUDENT_REGISTRATION">FK</span>REG_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_INSTANCE">FK</span>COURSE_INSTANCE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">COURSE_TYPE</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#0891b2">SYSTEM_CONFIG</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>CONFIG_KEY</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">CONFIG_VALUE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">UPDATED_AT</span><span class="col-type">DATE</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1e3a5f">TEXT_BOOKS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>BOOK_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name"><span class="col-note" title="FK to COURSE_MASTER">FK</span>COURSE_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">TITLE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">TYPE</span><span class="col-type">VARCHAR2</span></div>
+    </div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-header" style="background:#1d4ed8">USERS</div>
+    <div class="tbl-body">
+      <div class="col-row"><span class="col-name"><span class="col-note">PK</span>USER_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">LOGIN_ID</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">PASSWORD_HASH</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">ROLE</span><span class="col-type">VARCHAR2</span></div>
+      <div class="col-row"><span class="col-name">CREATED_AT</span><span class="col-type">DATE</span></div>
+      <div class="col-row"><span class="col-name">STUDENT_ID</span><span class="col-type">NUMBER</span></div>
+      <div class="col-row"><span class="col-name">FACULTY_ID</span><span class="col-type">NUMBER</span></div>
+    </div>
+  </div>
 </script>
 
 <script id="data-core" type="text/plain">
@@ -632,6 +858,11 @@ async function showView(v) {
   if (v === 'ref') {
     diagramView.style.display = 'none';
     tableView.style.display = 'block';
+    // Inject dynamic cards if empty
+    const container = document.getElementById('dynamic-table-cards');
+    if (container && !container.innerHTML.trim()) {
+      container.innerHTML = '<div class="tables-grid">' + document.getElementById('data-table-cards').innerHTML + '</div>';
+    }
   } else {
     tableView.style.display = 'none';
     diagramView.style.display = 'block';

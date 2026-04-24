@@ -1,0 +1,1348 @@
+{
+    "ATTENDANCE": {
+        "columns": [
+            {
+                "name": "ATTENDANCE_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "STUDENT_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "COURSE_INSTANCE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "ATTENDANCE_PERCENTAGE",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "ATTENDANCE_ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_INSTANCE_ID",
+                "ref_table": "COURSE_INSTANCE",
+                "ref_column": "INSTANCE_ID"
+            }
+        ]
+    },
+    "BOOKING": {
+        "columns": [
+            {
+                "name": "HOTELNO",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "GUESTNO",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "DATEFROM",
+                "type": "DATE",
+                "nullable": true
+            },
+            {
+                "name": "DATETO",
+                "type": "DATE",
+                "nullable": true
+            },
+            {
+                "name": "ROOMNO",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [],
+        "fks": []
+    },
+    "COORDINATOR": {
+        "columns": [
+            {
+                "name": "ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "FACULTY_ID",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "ID"
+        ],
+        "fks": [
+            {
+                "column": "FACULTY_ID",
+                "ref_table": "FACULTY",
+                "ref_column": "FACULTY_ID"
+            },
+            {
+                "column": "COURSE_ID",
+                "ref_table": "COURSE_MASTER",
+                "ref_column": "COURSE_ID"
+            }
+        ]
+    },
+    "COURSE": {
+        "columns": [
+            {
+                "name": "COURSE_CODE",
+                "type": "VARCHAR2",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_TITLE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "COURSE_TYPE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "L",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "T",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "P",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "CREDITS",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "PREREQUISITE",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "COURSE_CODE"
+        ],
+        "fks": []
+    },
+    "COURSE_DESCRIPTION": {
+        "columns": [
+            {
+                "name": "DESC_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "TOPIC",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "DURATION_WEEKS",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "DESC_ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_ID",
+                "ref_table": "COURSE_MASTER",
+                "ref_column": "COURSE_ID"
+            }
+        ]
+    },
+    "COURSE_INSTANCE": {
+        "columns": [
+            {
+                "name": "INSTANCE_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "FACULTY_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "ACADEMIC_SESSION",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "SEMESTER",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "SECTION",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "BATCH",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "SLOT",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "INSTANCE_ID"
+        ],
+        "fks": [
+            {
+                "column": "FACULTY_ID",
+                "ref_table": "FACULTY",
+                "ref_column": "FACULTY_ID"
+            },
+            {
+                "column": "COURSE_ID",
+                "ref_table": "COURSE_MASTER",
+                "ref_column": "COURSE_ID"
+            }
+        ]
+    },
+    "COURSE_MASTER": {
+        "columns": [
+            {
+                "name": "COURSE_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_CODE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "COURSE_TITLE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "COURSE_TYPE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "PROGRAM",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "L",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "T",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "P",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "CREDITS",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "COURSE_ID"
+        ],
+        "fks": []
+    },
+    "COURSE_OBJECTIVES": {
+        "columns": [
+            {
+                "name": "OBJ_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "DESCRIPTION",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "PRINT_SEQ",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "OBJ_ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_ID",
+                "ref_table": "COURSE_MASTER",
+                "ref_column": "COURSE_ID"
+            }
+        ]
+    },
+    "COURSE_OUTCOME": {
+        "columns": [
+            {
+                "name": "CO_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_CODE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "DESCRIPTION",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "CO_ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_CODE",
+                "ref_table": "COURSE",
+                "ref_column": "COURSE_CODE"
+            }
+        ]
+    },
+    "COURSE_OUTCOMES": {
+        "columns": [
+            {
+                "name": "OUTCOME_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "OUTCOME_DESC",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "PRINT_SEQ",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "OUTCOME_ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_ID",
+                "ref_table": "COURSE_MASTER",
+                "ref_column": "COURSE_ID"
+            }
+        ]
+    },
+    "COURSE_PO_MAPPING": {
+        "columns": [
+            {
+                "name": "MAPPING_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_OUTCOME_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "PROGRAM_OUTCOME_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "WEIGHTAGE",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "MAPPING_ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_OUTCOME_ID",
+                "ref_table": "COURSE_OUTCOMES",
+                "ref_column": "OUTCOME_ID"
+            }
+        ]
+    },
+    "COURSE_PREREQUISITES": {
+        "columns": [
+            {
+                "name": "ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "PREREQUISITE_COURSE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_ID",
+                "ref_table": "COURSE_MASTER",
+                "ref_column": "COURSE_ID"
+            },
+            {
+                "column": "PREREQUISITE_COURSE_ID",
+                "ref_table": "COURSE_MASTER",
+                "ref_column": "COURSE_ID"
+            }
+        ]
+    },
+    "CO_PO_MAPPING": {
+        "columns": [
+            {
+                "name": "MAPPING_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_OUTCOME_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "PROGRAM_OUTCOME_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "WEIGHTAGE",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "MAPPING_ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_OUTCOME_ID",
+                "ref_table": "COURSE_OUTCOMES",
+                "ref_column": "OUTCOME_ID"
+            },
+            {
+                "column": "PROGRAM_OUTCOME_ID",
+                "ref_table": "PROGRAM_OUTCOMES",
+                "ref_column": "PO_ID"
+            }
+        ]
+    },
+    "EVALUATION_DETAILS": {
+        "columns": [
+            {
+                "name": "EVAL_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "EVAL_TYPE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "WEIGHTAGE",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "DESCRIPTION",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "EVAL_ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_ID",
+                "ref_table": "COURSE_MASTER",
+                "ref_column": "COURSE_ID"
+            }
+        ]
+    },
+    "FACULTY": {
+        "columns": [
+            {
+                "name": "FACULTY_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "USER_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "FACULTY_NAME",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "EMAIL",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "DEPARTMENT",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "FACULTY_ID"
+        ],
+        "fks": [
+            {
+                "column": "USER_ID",
+                "ref_table": "USERS",
+                "ref_column": "USER_ID"
+            }
+        ]
+    },
+    "GUEST": {
+        "columns": [
+            {
+                "name": "GUESTNO",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "NAME",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "ADDRESS",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [],
+        "fks": []
+    },
+    "HOTEL": {
+        "columns": [
+            {
+                "name": "HOTELNO",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "NAME",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "ADDRESS",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [],
+        "fks": []
+    },
+    "LAB_EXPERIMENT": {
+        "columns": [
+            {
+                "name": "EXPERIMENT_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_CODE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "EXPERIMENT_DESCRIPTION",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "EXPERIMENT_ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_CODE",
+                "ref_table": "COURSE",
+                "ref_column": "COURSE_CODE"
+            }
+        ]
+    },
+    "LAPTOP": {
+        "columns": [
+            {
+                "name": "MODEL1",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "SPEED",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "RAM",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "HD",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "SCREEEN",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "PRICE",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [],
+        "fks": []
+    },
+    "PC": {
+        "columns": [
+            {
+                "name": "MODEL1",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "SPEED",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "RAM",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "HD",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "SCREEEN",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "PRICE",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [],
+        "fks": []
+    },
+    "PRINTER": {
+        "columns": [
+            {
+                "name": "MODEL2",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "COLOR",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "TYPE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "PRICE",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [],
+        "fks": []
+    },
+    "PRODUCT": {
+        "columns": [
+            {
+                "name": "MAKER",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "MODEL",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "TYPE",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [],
+        "fks": []
+    },
+    "PROGRAM_OUTCOMES": {
+        "columns": [
+            {
+                "name": "PO_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "PO_CODE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "PO_DESCRIPTION",
+                "type": "CLOB",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "PO_ID"
+        ],
+        "fks": []
+    },
+    "REFERENCE_BOOKS": {
+        "columns": [
+            {
+                "name": "REF_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "TITLE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "TYPE",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "REF_ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_ID",
+                "ref_table": "COURSE_MASTER",
+                "ref_column": "COURSE_ID"
+            }
+        ]
+    },
+    "REGISTRATION_COURSES": {
+        "columns": [
+            {
+                "name": "ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "REG_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "COURSE_INSTANCE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "COURSE_TYPE",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_INSTANCE_ID",
+                "ref_table": "COURSE_INSTANCE",
+                "ref_column": "INSTANCE_ID"
+            }
+        ]
+    },
+    "RESULTS": {
+        "columns": [
+            {
+                "name": "RESULT_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "STUDENT_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "COURSE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "GRADE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "ACADEMIC_SESSION",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "SEMESTER",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "RESULT_ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_ID",
+                "ref_table": "COURSE_MASTER",
+                "ref_column": "COURSE_ID"
+            }
+        ]
+    },
+    "ROOM": {
+        "columns": [
+            {
+                "name": "ROOMNO",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "HOTELNO",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "TYPE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "PRICE",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [],
+        "fks": []
+    },
+    "SENSORLOG": {
+        "columns": [
+            {
+                "name": "MACHINEID",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "SENSORID",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "DATETIME",
+                "type": "TIMESTAMP(6)",
+                "nullable": true
+            },
+            {
+                "name": "SEQUENCENO",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "VALUE",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [],
+        "fks": []
+    },
+    "STUDENT": {
+        "columns": [
+            {
+                "name": "STUDENT_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "NAME",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "BRANCH",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "SEMESTER",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "STUDENT_ID"
+        ],
+        "fks": []
+    },
+    "STUDENTS": {
+        "columns": [
+            {
+                "name": "STUDENT_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "NAME",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "EMAIL",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "MOBILE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "PROGRAM",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "AADHAR",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "DOB",
+                "type": "DATE",
+                "nullable": true
+            },
+            {
+                "name": "ADDRESS",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "STATUS",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "ENROLLMENT_NO",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "FACULTY_ADVISOR",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "IS_HOSTELLER",
+                "type": "CHAR",
+                "nullable": true
+            },
+            {
+                "name": "REGISTRATION_DATE",
+                "type": "DATE",
+                "nullable": true
+            },
+            {
+                "name": "USER_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "ADVISOR_ID",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "STUDENT_ID"
+        ],
+        "fks": []
+    },
+    "STUDENT_APPLICATION": {
+        "columns": [
+            {
+                "name": "APP_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "NAME",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "EMAIL",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "MOBILE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "PROGRAM",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "SEMESTER",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "APPLICATION_DATE",
+                "type": "DATE",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "APP_ID"
+        ],
+        "fks": []
+    },
+    "STUDENT_REGISTRATION": {
+        "columns": [
+            {
+                "name": "REG_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "STUDENT_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "SEMESTER",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "ACADEMIC_SESSION",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "STATUS",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "REGISTRATION_DATE",
+                "type": "DATE",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "REG_ID"
+        ],
+        "fks": []
+    },
+    "STUDENT_REGISTRATION_COURSES": {
+        "columns": [
+            {
+                "name": "ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "REG_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "COURSE_INSTANCE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "COURSE_TYPE",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "ID"
+        ],
+        "fks": [
+            {
+                "column": "REG_ID",
+                "ref_table": "STUDENT_REGISTRATION",
+                "ref_column": "REG_ID"
+            }
+        ]
+    },
+    "SYSTEM_CONFIG": {
+        "columns": [
+            {
+                "name": "CONFIG_KEY",
+                "type": "VARCHAR2",
+                "nullable": false
+            },
+            {
+                "name": "CONFIG_VALUE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "UPDATED_AT",
+                "type": "DATE",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "CONFIG_KEY"
+        ],
+        "fks": []
+    },
+    "TEXT_BOOKS": {
+        "columns": [
+            {
+                "name": "BOOK_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "COURSE_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "TITLE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "TYPE",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "BOOK_ID"
+        ],
+        "fks": [
+            {
+                "column": "COURSE_ID",
+                "ref_table": "COURSE_MASTER",
+                "ref_column": "COURSE_ID"
+            }
+        ]
+    },
+    "USERS": {
+        "columns": [
+            {
+                "name": "USER_ID",
+                "type": "NUMBER",
+                "nullable": false
+            },
+            {
+                "name": "LOGIN_ID",
+                "type": "VARCHAR2",
+                "nullable": false
+            },
+            {
+                "name": "PASSWORD_HASH",
+                "type": "VARCHAR2",
+                "nullable": false
+            },
+            {
+                "name": "ROLE",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "CREATED_AT",
+                "type": "DATE",
+                "nullable": true
+            },
+            {
+                "name": "STUDENT_ID",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "FACULTY_ID",
+                "type": "NUMBER",
+                "nullable": true
+            }
+        ],
+        "pks": [
+            "USER_ID"
+        ],
+        "fks": []
+    },
+    "ZCOMPANY": {
+        "columns": [
+            {
+                "name": "CNAME",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "CCITY",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [],
+        "fks": []
+    },
+    "ZEMPLOYEE": {
+        "columns": [
+            {
+                "name": "EMPNO",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "CITY",
+                "type": "VARCHAR2",
+                "nullable": true
+            }
+        ],
+        "pks": [],
+        "fks": []
+    },
+    "ZEMP_COMPANY": {
+        "columns": [
+            {
+                "name": "EMPNO",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "ENAME",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "CNAME",
+                "type": "VARCHAR2",
+                "nullable": true
+            },
+            {
+                "name": "SALARY",
+                "type": "NUMBER",
+                "nullable": true
+            },
+            {
+                "name": "JDATE",
+                "type": "DATE",
+                "nullable": true
+            }
+        ],
+        "pks": [],
+        "fks": []
+    }
+}

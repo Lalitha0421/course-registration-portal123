@@ -183,6 +183,9 @@
                 VNIT Course Portal
             </a>
             <div class="d-flex align-items-center gap-3">
+                <a href="/er_diagram" target="_blank" class="btn btn-sm btn-outline-info rounded-pill px-3">
+                    <i class="bi bi-diagram-3 me-1"></i> ER Diagram
+                </a>
                 <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-outline-light rounded-pill px-3">
                     <i class="bi bi-box-arrow-left me-1"></i> Logout
                 </a>
@@ -376,6 +379,10 @@
                                     <div class="progress-bar {{ 'bg-success' if c[3]|int >= 75 else 'bg-danger' if c[3]|int > 0 else 'bg-secondary' }}" 
                                          role="progressbar" style="width: {{ c[3]|int }}%; border-radius: 10px;"></div>
                                 </div>
+
+                                <a href="{{ url_for('student.daily_attendance', instance_id=c[4]) }}" class="btn btn-sm btn-outline-primary w-100 rounded-pill mb-3">
+                                    <i class="bi bi-clock-history me-1"></i> View Attendance History
+                                </a>
 
                                 <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
                                     <span class="small text-muted">Status: {{ 'On Track' if c[3]|int >= 75 else 'Critical' if c[3]|int > 0 else 'In Progress' }}</span>

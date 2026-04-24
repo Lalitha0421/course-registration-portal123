@@ -93,12 +93,18 @@ def student_dashboard():
             # 4. Fetch Active Courses (registered for latest session)
             if reg_status == 'APPROVED':
                 cursor.execute("""
-                    SELECT c.course_code, c.course_title, f.faculty_name, NVL(a.attendance_percentage, 0)
+                    SELECT 
+                        c.course_code, 
+                        c.course_title, 
+                        f.faculty_name, 
+                        (SELECT ROUND((COUNT(CASE WHEN da.status = 'PRESENT' THEN 1 END) * 100.0) / NULLIF(COUNT(*), 0), 2) 
+                         FROM daily_attendance da 
+                         WHERE da.student_id = :sid AND da.course_instance_id = ci.instance_id) as percentage,
+                        ci.instance_id
                     FROM student_registration_courses src
                     JOIN course_instance ci ON src.course_instance_id = ci.instance_id
                     JOIN course_master c ON ci.course_id = c.course_id
                     LEFT JOIN faculty f ON ci.faculty_id = f.faculty_id
-                    LEFT JOIN attendance a ON a.student_id = :sid AND a.course_instance_id = ci.instance_id
                     WHERE src.reg_id = :rid
                 """, sid=student_id, rid=last_reg_id)
                 active_courses = cursor.fetchall()
@@ -122,6 +128,41 @@ def student_dashboard():
                            reg_session=reg_session,
                            active_courses=active_courses,
                            available_sessions=available_sessions)
+
+@student_bp.route("/attendance/<int:instance_id>")
+def daily_attendance(instance_id):
+    if session.get("role") != "student":
+        return redirect(url_for("auth.login_page"))
+    
+    student_id = session.get("student_id")
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Fetch Course Info
+    cursor.execute("""
+        SELECT c.course_code, c.course_title, f.faculty_name
+        FROM course_instance ci
+        JOIN course_master c ON ci.course_id = c.course_id
+        LEFT JOIN faculty f ON ci.faculty_id = f.faculty_id
+        WHERE ci.instance_id = :1
+    """, (instance_id,))
+    course_info = cursor.fetchone()
+
+    # Fetch Daily Records
+    cursor.execute("""
+        SELECT attendance_date, status
+        FROM daily_attendance
+        WHERE student_id = :sid AND course_instance_id = :inst
+        ORDER BY attendance_date DESC
+    """, sid=student_id, inst=instance_id)
+    records = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template("student_daily_attendance.html", 
+                           course_info=course_info, 
+                           records=records)
 
 # ────────────────────────────────────────────────
 # EXAMINATION RESULTS
