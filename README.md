@@ -1,85 +1,95 @@
 # 🎓 VNIT Course Registration & Academic Portal
 
-A professional-grade academic management system designed to streamline the student registration lifecycle, advisor approvals, and performance tracking at VNIT Nagpur.
+A professional-grade academic management system designed to streamline the student registration lifecycle, advisor approvals, and performance tracking at VNIT Nagpur. Built with a robust **Oracle XE** backend and a modern **Flask** architecture.
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Framework-Flask-red.svg)
 ![Database](https://img.shields.io/badge/Database-Oracle%20XE-orange.svg)
+![Architecture](https://img.shields.io/badge/Schema-21%2B%20Tables-green.svg)
 
 ## 🌟 Key Features
-- **Multi-Role Dashboards:** Specialized interfaces for Students, Faculty (Advisors), and Administrators.
-- **Academic Engine:** 
-  - Enforces DC (Departmental Core) and DE (Departmental Elective) selection rules.
-  - Automatically identifies Backlogs and checks Prerequisites.
-  - Real-time CGPA calculation and attendance progress tracking.
-- **Outcome-Based Education (OBE):** Integrated mapping for Course Outcomes (CO) to Program Outcomes (PO) for NBA/NAAC compliance.
-- **Automated Documents:** Dynamic generation of formatted Registration PDFs using ReportLab.
-- **Administrative Control:** Manage session configurations, faculty assignments, and syllabus descriptions.
-- **Architectural Transparency:** Built-in interactive ER diagram showing the 21-table schema.
 
-## 🎨 Visual Excellence
-The portal features a premium **Glassmorphism UI** with:
-- Outfit typography for maximum readability.
-- Micro-animations for smooth transitions.
-- Responsive layouts for cross-device compatibility.
-- Interactive data visualizations for academic progress.
+### 👨‍🎓 Student Lifecycle Management
+- **Smart Registration:** Enforces DC (Departmental Core) and DE (Departmental Elective) selection rules.
+- **Academic Auditing:** Automatically identifies Backlogs and validates Prerequisites in real-time.
+- **Progress Tracking:** Interactive dashboards for CGPA calculation and attendance monitoring.
+- **Document Generation:** Dynamic PDF generation for Registration Forms using ReportLab.
 
-## 🛠️ Tech Stack
-- **Backend:** Python (Flask)
-- **Database:** Oracle Database Express Edition (XE)
-- **Frontend:** HTML5, CSS3, JavaScript (Vanilla), Bootstrap 5
-- **Reporting:** ReportLab (PDF Generation)
-- **Environment:** Dotenv for secure configuration
+### 👨‍🏫 Faculty & Advisor Suite
+- **Advisory Dashboard:** Dedicated interface for managing coordinated students and course approvals.
+- **Daily Attendance Grid:** A specialized grid interface for high-resolution attendance tracking (Present/Absent).
+- **Grading Engine:** Comprehensive result entry system with Oracle-backed data integrity.
+- **Syllabus Management:** Integrated tools for defining Course Objectives, Outcomes (COs), and Weekly Descriptions.
 
-## 📊 Database Architecture
-The system is built on a robust Oracle schema featuring:
-- **21+ Normalized Tables**
-- Multi-tenant relationships (Students ↔ Advisors ↔ Courses)
-- Comprehensive Syllabus & Evaluation management
+### 🛡️ Administrative Control
+- **Session Management:** Configure academic sessions, course instances, and faculty assignments.
+- **System Monitoring:** Debug dashboards for verifying database table counts and session integrity.
+- **Academic Catalog:** Centralized management of the master course database.
+
+## 📊 Technical Architecture
+
+The system is built on a highly normalized **Oracle Database** schema featuring **21+ tables**.
+
+### Database Highlights:
+- **Relational Integrity:** Complex multi-tenant relationships between Students, Advisors, Faculty, and Course Instances.
+- **Outcome-Based Education (OBE):** Schema support for Course Outcomes (CO) to Program Outcomes (PO) mapping.
+- **Efficient Upserts:** Utilizes Oracle `MERGE` statements for high-performance attendance and grading updates.
+- **ER Transparency:** Includes a built-in interactive ER diagram generated via Mermaid.js.
+
+## 🎨 Design Aesthetics
+- **UI/UX:** Premium **Glassmorphism** interface with Outfit typography.
+- **Interactivity:** Smooth micro-animations and responsive layouts built with Vanilla CSS and Bootstrap 5.
+- **Real-time Feedback:** Toast notifications and dynamic progress bars for better UX.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Python 3.8+
-- Oracle Database Express Edition (XE)
-- **Optional:** Docker & Docker Compose
+- **Python 3.8+**
+- **Oracle Database Express Edition (XE)**
+- **cx_Oracle / python-oracledb** drivers.
 
-### Option 1: Manual Installation
-1. Clone the repository:
+### Quick Setup
+
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/Lalitha0421/course-registration-portal123.git
    cd course-registration-portal123
    ```
 
-2. Create and activate a virtual environment:
+2. **Setup Virtual Environment:**
    ```bash
    python -m venv venv
    source venv/Scripts/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. Install dependencies:
+3. **Install Dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Configure environment variables in `.env`.
+4. **Environment Configuration:**
+   Create a `.env` file with your Oracle credentials:
+   ```env
+   DB_USER=your_user
+   DB_PASSWORD=your_password
+   DB_DSN=localhost:1521/xe
+   SECRET_KEY=your_secret_key
+   ```
 
-5. Launch the application:
+5. **Initialize Database:**
+   Run the provided scripts in `/sql` or use `create_demo_db.py` for a quick setup.
+
+6. **Run App:**
    ```bash
    python app.py
    ```
 
-### Option 2: Docker Deployment (Recommended)
-This is the easiest way to launch the portal along with a pre-configured Oracle XE database.
-
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
-2. Run the deployment command:
-   ```bash
-   docker-compose up --build -d
-   ```
-3. The app will be available at `http://localhost:5000`. 
-   The database will automatically initialize using scripts in `/sql`.
+### Docker Deployment (Recommended)
+Launch the entire stack (App + Oracle XE) with a single command:
+```bash
+docker-compose up --build -d
+```
 
 ---
-*Built with ❤️ for VNIT Nagpur.*
+*Built for excellence at VNIT Nagpur.*
