@@ -51,17 +51,22 @@ def add_course():
         conn = get_connection()
         cursor = conn.cursor()
 
+        # 0. Check if course already exists
+        cursor.execute("SELECT course_id FROM course_master WHERE course_code = :1", (course_code,))
+        if cursor.fetchone():
+            flash(f'Course {course_code} already exists in Master.', 'warning')
+            return redirect(url_for('admin.add_course'))
+
         # Build academic session string
         academic_session = f"Year {year} {semester}"
         
         # ORA-01722 Fix: semester in DB is a NUMBER. Map text to number.
-        # e.g. Year 1 Summer -> 1, Year 1 Winter -> 2, Year 2 Summer -> 3, etc.
         try:
             semester_num = (int(year) * 2 - 1) if semester == 'Summer' else (int(year) * 2)
         except:
             semester_num = 1
 
-        # 1. Create Course Master
+        # 1. Create Course Master (Manual ID as DB is not IDENTITY)
         cursor.execute("SELECT NVL(MAX(course_id), 0) + 1 FROM course_master")
         course_id = cursor.fetchone()[0]
 
@@ -72,7 +77,7 @@ def add_course():
             ) VALUES (:1, :2, :3, :4, 'B.TECH', 0, 0, 0, :5)
         """, (course_id, course_code, course_title, course_type, credits))
 
-        # 2. Create Course Instance (Academic Session)
+        # 2. Create Course Instance (Manual ID)
         cursor.execute("SELECT NVL(MAX(instance_id), 0) + 1 FROM course_instance")
         instance_id = cursor.fetchone()[0]
 
@@ -83,7 +88,7 @@ def add_course():
         """, (instance_id, course_id, academic_session, semester_num))
 
         conn.commit()
-        flash(f'Course {course_code} added to {academic_session}', 'success')
+        flash(f'Course {course_code} added successfully!', 'success')
 
     except Exception as e:
         flash(f'Error adding course: {str(e)}', 'danger')
@@ -262,6 +267,8 @@ def edit_course(course_id):
         weights = request.form.getlist('weightage[]')
         for comp, weight in zip(components, weights):
             if comp.strip() and weight:
+                # Use columns matching dump: EVAL_TYPE, WEIGHTAGE
+                # Check dump again: EVAL_TYPE, WEIGHTAGE, COURSE_ID
                 cursor.execute("""
                     INSERT INTO evaluation_details (course_id, eval_type, weightage) 
                     VALUES (:cid, :comp, :weight)

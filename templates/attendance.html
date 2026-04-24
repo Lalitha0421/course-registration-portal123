@@ -55,6 +55,27 @@
     {% endwith %}
 
     <form method="POST">
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-4">
+                <label class="form-label fw-bold text-muted small">SELECT DATE</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i data-lucide="calendar" size="18" class="text-primary"></i>
+                    </span>
+                    <input type="date" name="date" class="form-control border-start-0 ps-0" 
+                           value="{{ selected_date }}" onchange="this.form.method='get'; this.form.submit()">
+                </div>
+            </div>
+            <div class="col-md-8 text-end pt-4">
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3 me-2" onclick="selectAll(true)">
+                    Select All
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="selectAll(false)">
+                    Deselect All
+                </button>
+            </div>
+        </div>
+
         <div class="section-card">
             <div class="table-responsive">
                 <table class="table hover align-middle mb-0">
@@ -62,8 +83,8 @@
                         <tr>
                             <th>Student</th>
                             <th>Enrollment No</th>
-                            <th>Current Attendance</th>
-                            <th>Update Percentage (%)</th>
+                            <th>Overall Attendance</th>
+                            <th class="text-center">Status for {{ selected_date }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,15 +98,22 @@
                                 </td>
                                 <td><code class="text-primary">{{ student[2] }}</code></td>
                                 <td>
+                                    {% set perc = (student[4] * 100 / student[5]) if student[5] > 0 else 0 %}
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="progress-compact">
-                                            <div class="progress-bar bg-{{ 'success' if student[3] >= 75 else 'warning' if student[3] >= 60 else 'danger' }}" style="width: {{ student[3] }}%"></div>
+                                            <div class="progress-bar bg-{{ 'success' if perc >= 75 else 'warning' if perc >= 60 else 'danger' }}" style="width: {{ perc }}%"></div>
                                         </div>
-                                        <span class="fw-bold">{{ student[3] }}%</span>
+                                        <span class="fw-bold">{{ student[4] }}/{{ student[5] }}</span>
+                                        <span class="small text-muted">({{ perc|round(1) }}%)</span>
                                     </div>
                                 </td>
-                                <td>
-                                    <input type="number" name="percentage[]" step="0.01" min="0" max="100" class="attendance-input" value="{{ student[3] }}" placeholder="0.00">
+                                <td class="text-center">
+                                    <div class="form-check form-switch d-inline-block">
+                                        <input class="form-check-input attendance-checkbox" type="checkbox" 
+                                               name="present_ids[]" value="{{ student[0] }}"
+                                               style="width: 3em; height: 1.5em; cursor: pointer;"
+                                               {{ 'checked' if student[3] == 'PRESENT' else '' }}>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -105,16 +133,21 @@
         {% if students %}
         <div class="save-bar">
             <div class="text-muted small">
-                <i data-lucide="info" size="14"></i> Tip: Enter 0 for absent students.
+                <i data-lucide="info" size="14"></i> Tip: Ticking mark as Present, Unticking marks as Absent.
             </div>
             <button type="submit" class="btn btn-primary px-5 py-2 fw-bold rounded-pill">
-                Save Attendance Data
+                Update Attendance
             </button>
         </div>
         {% endif %}
     </form>
 </div>
 
-<script>lucide.createIcons();</script>
+<script>
+    lucide.createIcons();
+    function selectAll(val) {
+        document.querySelectorAll('.attendance-checkbox').forEach(cb => cb.checked = val);
+    }
+</script>
 </body>
 </html>
