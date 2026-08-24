@@ -347,6 +347,7 @@ This finds failed courses that have NO subsequent passing grade — the correct 
 - **Problem-solving skills:** "I identified and fixed a race condition in attendance using MERGE, resolved a DPY-4009 driver bug in Oracle named parameters, and built a NOT EXISTS anti-join for accurate backlog detection"
 
 ### Possible Follow-Up Questions & Quick Answers
+- **"Generically colleges use computers now, why build this portal?"** — Digitalization is not integration. Most colleges use fragmented tools (Google Forms + Excel + separate ERPs) requiring manual verification. This project unifies rule enforcement (prerequisites/backlogs), concurrent transactional locking (Oracle MERGE), real-time attendance calculation, and NBA/NAAC accreditation (OBE CO-PO mapping) into a single DB schema.
 - **"How would you scale this to 10,000 students?"** — Nginx load balancer + multiple Flask workers + Redis sessions + oracledb connection pooling + Celery for async email + Redis cache for course lists
 - **"Why not use an ORM?"** — Oracle MERGE, LISTAGG, analytical functions are not supported by SQLAlchemy/Django ORM natively. Raw SQL gives full control.
 - **"What's the most complex SQL query?"** — CGPA CTE with grade-to-points CASE mapping + weighted average + NULLIF division guard + LEFT JOIN for students with no results
